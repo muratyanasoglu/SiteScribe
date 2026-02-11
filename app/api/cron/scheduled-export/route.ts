@@ -1,8 +1,10 @@
 /**
  * Scheduled export cron endpoint. Call via GET?secret=CRON_SECRET (Vercel Cron or external).
  * If notificationEmail is set, sends email after export (requires RESEND_API_KEY).
+ * Uses timing-safe comparison for the secret to prevent timing attacks.
  */
 
+import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { createExportJob, createExportJobFromBuffers } from '@/lib/export-job';
@@ -15,7 +17,16 @@ export const maxDuration = 60;
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
   const provided = new URL(req.url).searchParams.get('secret');
-  if (!secret || provided !== secret) {
+  if (!secret || !provided) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  try {
+    const a = Buffer.from(secret, 'utf8');
+    const b = Buffer.from(provided, 'utf8');
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+  } catch {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   const jobs = await prisma.scheduledExport.findMany({

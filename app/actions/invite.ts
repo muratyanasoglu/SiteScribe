@@ -3,16 +3,21 @@
 import crypto from 'crypto';
 import { prisma } from '@/lib/db';
 import { requireOrgRole } from '@/lib/auth-server';
-import { validateEmail } from '@/lib/validation';
+import { validateEmail, isValidId } from '@/lib/validation';
 import { sendInviteEmail } from '@/lib/email';
 import { revalidatePath } from 'next/cache';
 
 const INVITE_EXPIRY_DAYS = 7;
+const ALLOWED_ROLES = ['VIEWER', 'SUBCONTRACTOR', 'FIELD', 'PM'] as const;
 
 export async function inviteMember(organizationId: string, email: string, role: string) {
   await requireOrgRole(organizationId, 'OWNER');
   const emailResult = validateEmail(email);
   if (!emailResult.ok) return { error: emailResult.error };
+  const roleTrimmed = typeof role === 'string' ? role.trim().toUpperCase() : '';
+  if (!ALLOWED_ROLES.includes(roleTrimmed as typeof ALLOWED_ROLES[number])) {
+    return { error: 'Invalid role' };
+  }
   const token = crypto.randomBytes(24).toString('hex');
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + INVITE_EXPIRY_DAYS);
@@ -20,7 +25,7 @@ export async function inviteMember(organizationId: string, email: string, role: 
     data: {
       organizationId,
       email: emailResult.email,
-      role: role as 'VIEWER' | 'SUBCONTRACTOR' | 'FIELD' | 'PM',
+      role: roleTrimmed as 'VIEWER' | 'SUBCONTRACTOR' | 'FIELD' | 'PM',
       token,
       expiresAt,
     },
@@ -74,6 +79,9 @@ export async function listInvitations(organizationId: string) {
 /** Invite a friend (by userId) to the organization. Uses their email; same flow as inviteMember. */
 export async function inviteMemberByFriendId(organizationId: string, friendUserId: string, role: string) {
   await requireOrgRole(organizationId, 'OWNER');
+  if (!isValidId(friendUserId)) return { error: 'Invalid user' };
+  const roleTrimmed = typeof role === 'string' ? role.trim().toUpperCase() : '';
+  if (!ALLOWED_ROLES.includes(roleTrimmed as typeof ALLOWED_ROLES[number])) return { error: 'Invalid role' };
   const friend = await prisma.user.findUnique({
     where: { id: friendUserId },
     select: { email: true },

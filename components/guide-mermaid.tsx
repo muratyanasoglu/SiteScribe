@@ -9,8 +9,9 @@ export function GuideMermaid({ id, code }: { id: string; code: string }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
+  const safeCode = code.trim().slice(0, 10000);
   useEffect(() => {
-    if (!code.trim() || !containerRef.current) return;
+    if (!safeCode || !containerRef.current) return;
     let cancelled = false;
     setError(null);
     (async () => {
@@ -22,7 +23,7 @@ export function GuideMermaid({ id, code }: { id: string; code: string }) {
         mermaid.initialize({
           startOnLoad: false,
           theme: 'base',
-          securityLevel: 'loose',
+          securityLevel: 'strict',
           flowchart: { useMaxWidth: true, htmlLabels: true },
           sequence: { useMaxWidth: true },
           themeVariables: {
@@ -35,7 +36,7 @@ export function GuideMermaid({ id, code }: { id: string; code: string }) {
           },
         });
         const uid = `mermaid-${id}-${Math.random().toString(36).slice(2, 9)}`;
-        const { svg } = await mermaid.render(uid, code);
+        const { svg } = await mermaid.render(uid, safeCode);
         if (!cancelled && containerRef.current) {
           containerRef.current.innerHTML = svg;
         }

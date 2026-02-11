@@ -130,4 +130,13 @@ export function isValidId(id: unknown): id is string {
   return /^[a-zA-Z0-9_-]+$/.test(id);
 }
 
+/** Safe internal path for notification links (prevents open redirect / javascript:). Only allows relative paths. */
+export function sanitizeNotificationLink(link: unknown): string | null {
+  if (link == null || typeof link !== 'string') return null;
+  const s = link.trim();
+  if (!s.startsWith('/') || s.startsWith('//') || s.length > 2048) return null;
+  if (/^\s*javascript:/i.test(s) || /^\s*data:/i.test(s)) return null;
+  return s;
+}
+
 export { LIMITS };

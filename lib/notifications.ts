@@ -1,8 +1,10 @@
 /**
  * In-app notification creation and listing (invites, CO updates, etc.).
+ * Notification links are sanitized to internal paths only (no open redirect).
  */
 
 import { prisma } from '@/lib/db';
+import { sanitizeNotificationLink, isValidId } from '@/lib/validation';
 
 export async function createNotification(params: {
   userId: string;
@@ -11,13 +13,14 @@ export async function createNotification(params: {
   body?: string;
   link?: string;
 }) {
+  const link = params.link != null ? sanitizeNotificationLink(params.link) : null;
   return prisma.notification.create({
     data: {
       userId: params.userId,
       type: params.type,
       title: params.title,
       body: params.body,
-      link: params.link,
+      link,
     },
   });
 }
@@ -37,6 +40,7 @@ export async function getNotifications(userId: string, limit = 20) {
 }
 
 export async function markAsRead(userId: string, notificationId: string) {
+  if (!isValidId(notificationId)) return { count: 0 };
   return prisma.notification.updateMany({
     where: { id: notificationId, userId },
     data: { readAt: new Date() },
