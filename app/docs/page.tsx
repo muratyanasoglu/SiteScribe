@@ -4,6 +4,7 @@ import { getSession } from '@/lib/auth-server';
 import { getLocaleFromCookie, getMessages, createT } from '@/lib/i18n';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { MobileNavMenu } from '@/components/mobile-nav-menu';
 import { Button } from '@/components/ui/button';
 import { GuideMermaid } from '@/components/guide-mermaid';
 
@@ -33,20 +34,22 @@ export default async function DocsPage() {
             <span className="text-sm text-muted-foreground">{t('docs.pageTitle')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <LanguageSwitcher />
+            <MobileNavMenu>
+              <LanguageSwitcher />
+              <Link href="/guide">
+                <Button variant="ghost" size="sm" className="w-full sm:w-auto justify-start sm:justify-center min-h-[44px] sm:min-h-0">{t('docs.navGuide')}</Button>
+              </Link>
+              {session ? (
+                <Link href="/org">
+                  <Button variant="ghost" size="sm" className="w-full sm:w-auto justify-start sm:justify-center min-h-[44px] sm:min-h-0">{t('docs.navApp')}</Button>
+                </Link>
+              ) : (
+                <Link href="/login">
+                  <Button size="sm" className="w-full sm:w-auto justify-start sm:justify-center min-h-[44px] sm:min-h-0">{t('docs.navSignIn')}</Button>
+                </Link>
+              )}
+            </MobileNavMenu>
             <ThemeToggle />
-            <Link href="/guide">
-              <Button variant="ghost" size="sm">{t('docs.navGuide')}</Button>
-            </Link>
-            {session ? (
-              <Link href="/org">
-                <Button variant="ghost" size="sm">{t('docs.navApp')}</Button>
-              </Link>
-            ) : (
-              <Link href="/login">
-                <Button size="sm">{t('docs.navSignIn')}</Button>
-              </Link>
-            )}
           </div>
         </div>
       </header>

@@ -15,19 +15,24 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'email' },
+        email: { label: 'Email or username', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
-        if (isLoginBlocked(credentials.email)) return null;
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+        const identifier = String(credentials.email).trim();
+        if (!identifier) return null;
+        if (isLoginBlocked(identifier)) return null;
+        const isEmail = identifier.includes('@');
+        const user = await prisma.user.findFirst({
+          where: isEmail
+            ? { email: identifier.toLowerCase() }
+            : { username: identifier.toLowerCase() },
         });
         if (!user || !user.passwordHash) return null;
         const ok = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!ok) {
-          recordLoginFailure(credentials.email);
+          recordLoginFailure(identifier);
           return null;
         }
         return {

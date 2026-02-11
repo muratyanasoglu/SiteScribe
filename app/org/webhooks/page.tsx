@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { MobileNavMenu } from '@/components/mobile-nav-menu';
 import { WebhookForm } from './webhook-form';
 import { WebhookRow } from './webhook-row';
 
@@ -30,9 +31,11 @@ export default async function OrgWebhooksPage({
         <header className="page-header sticky top-0 z-30 p-4 sm:px-6 flex justify-between items-center">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('nav.siteScribe')}</h1>
           <div className="flex items-center gap-2">
-            <LanguageSwitcher />
+            <MobileNavMenu>
+              <LanguageSwitcher />
+              <Link href="/org" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.backToOrganizations')}</Link>
+            </MobileNavMenu>
             <ThemeToggle />
-            <Link href="/org" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.backToOrganizations')}</Link>
           </div>
         </header>
         <main className="p-4 sm:p-6 max-w-2xl mx-auto min-w-0 overflow-x-hidden">
@@ -73,9 +76,11 @@ export default async function OrgWebhooksPage({
       <header className="page-header sticky top-0 z-30 p-4 sm:px-6 flex justify-between items-center">
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('nav.siteScribe')}</h1>
         <div className="flex items-center gap-2">
-          <LanguageSwitcher />
+          <MobileNavMenu>
+            <LanguageSwitcher />
+            <Link href="/org" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.backToOrganizations')}</Link>
+          </MobileNavMenu>
           <ThemeToggle />
-          <Link href="/org" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.backToOrganizations')}</Link>
         </div>
       </header>
       <main className="p-4 sm:p-6 max-w-2xl mx-auto min-w-0 overflow-x-hidden">

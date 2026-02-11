@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { MobileNavMenu } from '@/components/mobile-nav-menu';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/components/locale-provider';
 
@@ -19,28 +20,30 @@ export function LandingNav() {
             SiteScribe
           </span>
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-6">
-          <Link
-            href="/guide"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-          >
-            {t('landing.nav.guide')}
-          </Link>
-          <Link
-            href="/docs"
-            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-          >
-            {t('landing.nav.docs')}
-          </Link>
-          <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          <MobileNavMenu>
+            <Link
+              href="/guide"
+              className="nav-link min-h-[44px] flex items-center sm:min-h-0 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+            >
+              {t('landing.nav.guide')}
+            </Link>
+            <Link
+              href="/docs"
+              className="nav-link min-h-[44px] flex items-center sm:min-h-0 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+            >
+              {t('landing.nav.docs')}
+            </Link>
+            <LanguageSwitcher />
+            <Link href="/login">
+              <Button variant="ghost" size="sm" className="w-full sm:w-auto justify-start sm:justify-center font-medium min-h-[44px] sm:min-h-0">{t('landing.nav.signIn')}</Button>
+            </Link>
+            <Link href="/register">
+              <Button size="sm" className="w-full sm:w-auto justify-start sm:justify-center font-semibold shadow-sm min-h-[44px] sm:min-h-0">{t('landing.nav.getStarted')}</Button>
+            </Link>
+          </MobileNavMenu>
           <ThemeToggle />
-          <Link href="/login">
-            <Button variant="ghost" size="sm" className="font-medium">{t('landing.nav.signIn')}</Button>
-          </Link>
-          <Link href="/register">
-            <Button size="sm" className="font-semibold shadow-sm">{t('landing.nav.getStarted')}</Button>
-          </Link>
-        </nav>
+        </div>
       </div>
     </header>
   );

@@ -4,6 +4,7 @@ import { getLocaleFromCookie, getMessages, createT } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { MobileNavMenu } from '@/components/mobile-nav-menu';
 import { GuideMermaid } from '@/components/guide-mermaid';
 
 export default async function GuidePage() {
@@ -21,28 +22,30 @@ export default async function GuidePage() {
           </Link>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('nav.guideTitle')}</h1>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          <MobileNavMenu>
+            <LanguageSwitcher />
+            {session ? (
+              <>
+                <Link href="/org">
+                  <Button variant="ghost" size="sm" className="w-full sm:w-auto justify-start sm:justify-center min-h-[44px] sm:min-h-0">{t('nav.organizations')}</Button>
+                </Link>
+                <Link href="/projects">
+                  <Button variant="ghost" size="sm" className="w-full sm:w-auto justify-start sm:justify-center min-h-[44px] sm:min-h-0">{t('nav.projects')}</Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="w-full sm:w-auto justify-start sm:justify-center min-h-[44px] sm:min-h-0">{t('auth.signIn')}</Button>
+                </Link>
+                <Link href="/register">
+                  <Button size="sm" className="w-full sm:w-auto justify-start sm:justify-center min-h-[44px] sm:min-h-0">{t('auth.register')}</Button>
+                </Link>
+              </>
+            )}
+          </MobileNavMenu>
           <ThemeToggle />
-          {session ? (
-            <>
-              <Link href="/org">
-                <Button variant="ghost" size="sm">{t('nav.organizations')}</Button>
-              </Link>
-              <Link href="/projects">
-                <Button variant="ghost" size="sm">{t('nav.projects')}</Button>
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link href="/login">
-                <Button variant="ghost" size="sm">{t('auth.signIn')}</Button>
-              </Link>
-              <Link href="/register">
-                <Button size="sm">{t('auth.register')}</Button>
-              </Link>
-            </>
-          )}
         </div>
       </header>
 

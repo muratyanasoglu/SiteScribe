@@ -22,11 +22,10 @@ export function ProjectLayoutClient({
   const [menuOpen, setMenuOpen] = useState(false);
   const t = useT();
 
-  const navContent = (
+  const navContentWithoutTheme = (
     <>
       <div className="flex items-center gap-2 py-2 flex-wrap">
         <LanguageSwitcher />
-        <ThemeToggle />
       </div>
       <Link href="/projects" className="nav-link py-2.5 -ml-1 block" onClick={() => setMenuOpen(false)}>
         {t('nav.backToProjects')}
@@ -69,7 +68,7 @@ export function ProjectLayoutClient({
           </svg>
         </button>
         <span className="font-semibold truncate max-w-[180px]">{projectName}</span>
-        <div className="w-10" />
+        <ThemeToggle />
       </header>
 
       {/* Mobile: drawer overlay + panel (animated) */}
@@ -85,12 +84,35 @@ export function ProjectLayoutClient({
           menuOpen ? 'translate-x-0' : '-translate-x-full pointer-events-none'
         }`}
       >
-        {navContent}
+        {navContentWithoutTheme}
       </aside>
 
       {/* Desktop: fixed sidebar */}
       <aside className="hidden md:flex w-60 shrink-0 border-r border-border/80 bg-card/30 p-5 flex-col gap-1">
-        {navContent}
+        <div className="flex items-center gap-2 py-2 flex-wrap">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
+        <Link href="/projects" className="nav-link py-2.5 -ml-1 block">
+          {t('nav.backToProjects')}
+        </Link>
+        <Link href="/guide" className="nav-link py-2.5 -ml-1 block">
+          {t('nav.guide')}
+        </Link>
+        <h3 className="font-semibold truncate py-2 text-foreground" title={projectName}>
+          {projectName}
+        </h3>
+        <nav className="flex flex-col gap-0.5">
+          {nav.map(({ href, labelKey, unreadCount }) => (
+            <Link
+              key={href}
+              href={href}
+              className="nav-link min-h-[44px] flex items-center"
+            >
+              {unreadCount != null && unreadCount > 0 ? `${t(labelKey)} (${unreadCount})` : t(labelKey)}
+            </Link>
+          ))}
+        </nav>
       </aside>
 
       <main className="flex-1 min-w-0 overflow-x-hidden p-4 sm:p-6 lg:p-8">{children}</main>

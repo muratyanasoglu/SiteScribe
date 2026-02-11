@@ -79,7 +79,7 @@ export function ChatThread({
 
   return (
     <div className="flex flex-col h-full min-h-0 w-full">
-      <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain p-3 sm:p-4 space-y-3 min-h-0">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain overflow-touch p-3 sm:p-4 space-y-3 min-h-0">
         {messages.map((m) => {
           const isMe = m.senderId === currentUserId;
           return (
@@ -105,7 +105,10 @@ export function ChatThread({
         <div ref={bottomRef} />
       </div>
       {error && <p className="text-sm text-destructive px-3 sm:px-4 py-2 shrink-0">{error}</p>}
-      <form onSubmit={handleSubmit} className="p-3 sm:p-4 pt-2 pb-[env(safe-area-inset-bottom,0)] sm:pb-4 border-t border-border flex gap-2 shrink-0 bg-background">
+      <form
+        onSubmit={handleSubmit}
+        className="p-3 sm:p-4 pt-2 pb-[env(safe-area-inset-bottom,0)] sm:pb-4 sm:pr-20 border-t border-border flex gap-2 shrink-0 bg-background"
+      >
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}

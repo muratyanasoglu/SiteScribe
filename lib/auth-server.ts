@@ -19,6 +19,17 @@ export async function getCurrentUser() {
   return user;
 }
 
+/** Current user with profile fields (e.g. for profile page). Includes securityQuestionKey, not the answer. */
+export async function getProfile() {
+  const session = await getSession();
+  if (!session?.user?.email) return null;
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { id: true, email: true, name: true, username: true, securityQuestionKey: true },
+  });
+  return user;
+}
+
 /** Get membership for an org; enforces org isolation. */
 export async function getMembership(organizationId: string): Promise<{ role: Role; membership: Membership } | null> {
   if (!isValidId(organizationId)) return null;

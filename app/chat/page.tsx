@@ -6,6 +6,7 @@ import { isValidId } from '@/lib/validation';
 import { getConversations, getMessagesWith, markChatAsRead } from '@/app/actions/chat';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { MobileNavMenu } from '@/components/mobile-nav-menu';
 import { Button } from '@/components/ui/button';
 import { ChatThread } from './chat-thread';
 
@@ -52,23 +53,26 @@ export default async function ChatPage({
         <div className="flex items-center justify-between gap-2 min-w-0">
           <h1 className="text-lg sm:text-2xl font-bold tracking-tight truncate">{t('nav.siteScribe')}</h1>
         </div>
-        <div className="flex flex-wrap gap-2 items-center justify-end sm:justify-between overflow-x-auto overflow-y-hidden py-1 -mx-1 scrollbar-thin">
-          <ThemeToggle />
+        <div className="flex items-center gap-2">
+        <MobileNavMenu>
           <LanguageSwitcher />
-          <Link href="/guide" className="text-sm whitespace-nowrap">{t('nav.guide')}</Link>
+          <Link href="/guide" className="nav-link min-h-[44px] flex items-center sm:min-h-0 text-sm whitespace-nowrap">{t('nav.guide')}</Link>
           <Link href="/friends">
-            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation">{t('nav.friends')}</Button>
+            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation sm:min-h-0 sm:min-w-0">{t('nav.friends')}</Button>
           </Link>
           <Link href="/org">
-            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation">{t('nav.organizations')}</Button>
+            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation sm:min-h-0 sm:min-w-0">{t('nav.organizations')}</Button>
           </Link>
           <Link href="/notifications">
-            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation">{t('nav.notifications')}</Button>
+            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation sm:min-h-0 sm:min-w-0">{t('nav.notifications')}</Button>
           </Link>
-          <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[120px] sm:max-w-[180px]">{session.user?.email}</span>
+          <Link href="/profile" className="nav-link min-h-[44px] flex items-center sm:min-h-0 text-sm whitespace-nowrap">{t('nav.profile')}</Link>
+          <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[120px] sm:max-w-[180px] px-2 py-2 sm:py-0">{session.user?.email}</span>
           <form action="/api/auth/signout" method="POST">
-            <Button type="submit" variant="outline" size="sm" className="min-h-10 touch-manipulation">{t('nav.signOut')}</Button>
+            <Button type="submit" variant="outline" size="sm" className="min-h-10 touch-manipulation sm:min-h-0 w-full sm:w-auto">{t('nav.signOut')}</Button>
           </form>
+        </MobileNavMenu>
+        <ThemeToggle />
         </div>
       </header>
       <div className="flex-1 flex min-h-0 overflow-hidden">
@@ -76,7 +80,7 @@ export default async function ChatPage({
           <div className="p-3 border-b border-border/80 shrink-0">
             <h2 className="font-semibold text-sm">{t('chat.conversations')}</h2>
           </div>
-          <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain min-h-0">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain overflow-touch min-h-0">
             {conversations.length === 0 ? (
               <p className="p-4 text-sm text-muted-foreground">{t('chat.noConversations')}</p>
             ) : (

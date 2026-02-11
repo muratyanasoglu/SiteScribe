@@ -20,11 +20,10 @@ export function ProjectsLayoutClient({
   const [menuOpen, setMenuOpen] = useState(false);
   const t = useT();
 
-  const sidebar = (
+  const sidebarWithoutTheme = (
     <>
       <div className="flex items-center gap-2 py-2 flex-wrap">
         <LanguageSwitcher />
-        <ThemeToggle />
       </div>
       <Link href="/org" className="nav-link py-2.5 -ml-1 block" onClick={() => setMenuOpen(false)}>
         {t('nav.backToOrganizations')}
@@ -37,7 +36,7 @@ export function ProjectsLayoutClient({
         <Link
           key={org.id}
           href={`/projects?org=${org.id}`}
-          className={`rounded-lg px-3 py-2.5 text-sm font-medium block min-h-[44px] flex items-center transition-colors ${
+          className={`rounded-lg px-3 py-2.5 text-sm font-medium min-h-[44px] flex items-center transition-colors ${
             selectedOrgId === org.id ? 'nav-link-active' : 'nav-link'
           }`}
           onClick={() => setMenuOpen(false)}
@@ -64,7 +63,7 @@ export function ProjectsLayoutClient({
           </svg>
         </button>
         <span className="font-semibold truncate max-w-[200px]">{selectedName}</span>
-        <div className="w-10" />
+        <ThemeToggle />
       </header>
 
       <div
@@ -79,11 +78,32 @@ export function ProjectsLayoutClient({
           menuOpen ? 'translate-x-0' : '-translate-x-full pointer-events-none'
         }`}
       >
-        {sidebar}
+        {sidebarWithoutTheme}
       </aside>
 
       <aside className="hidden md:flex w-60 shrink-0 border-r border-border/80 bg-card/30 p-5 flex-col gap-1">
-        {sidebar}
+        <div className="flex items-center gap-2 py-2 flex-wrap">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
+        <Link href="/org" className="nav-link py-2.5 -ml-1 block">
+          {t('nav.backToOrganizations')}
+        </Link>
+        <Link href="/guide" className="nav-link py-2.5 -ml-1 block">
+          {t('nav.guide')}
+        </Link>
+        <h3 className="font-semibold py-2 text-foreground">{t('nav.organizations')}</h3>
+        {orgs.map((org) => (
+          <Link
+            key={org.id}
+            href={`/projects?org=${org.id}`}
+            className={`rounded-lg px-3 py-2.5 text-sm font-medium min-h-[44px] flex items-center transition-colors ${
+              selectedOrgId === org.id ? 'nav-link-active' : 'nav-link'
+            }`}
+          >
+            {org.name}
+          </Link>
+        ))}
       </aside>
 
       <main className="flex-1 min-w-0 overflow-x-hidden p-4 sm:p-6 lg:p-8">{children}</main>

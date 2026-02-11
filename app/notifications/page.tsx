@@ -6,6 +6,7 @@ import { getLocaleFromCookie, getMessages, createT } from '@/lib/i18n';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { MobileNavMenu } from '@/components/mobile-nav-menu';
 import { NotificationsList } from './notifications-list';
 
 export default async function NotificationsPage() {
@@ -22,13 +23,16 @@ export default async function NotificationsPage() {
     <div className="min-h-screen bg-background">
       <header className="page-header sticky top-0 z-30 p-4 sm:px-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('nav.siteScribe')}</h1>
-        <div className="flex flex-wrap gap-2 items-center">
-          <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          <MobileNavMenu>
+            <LanguageSwitcher />
+            <Link href="/guide" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.guide')}</Link>
+            <Link href="/org" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.organizations')}</Link>
+            <Link href="/projects" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.projects')}</Link>
+            <Link href="/profile" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.profile')}</Link>
+            <span className="text-sm text-muted-foreground truncate max-w-[160px] sm:max-w-none px-2 py-2 sm:py-0">{session.user?.email}</span>
+          </MobileNavMenu>
           <ThemeToggle />
-          <Link href="/guide" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.guide')}</Link>
-          <Link href="/org" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.organizations')}</Link>
-          <Link href="/projects" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.projects')}</Link>
-          <span className="text-sm text-muted-foreground truncate max-w-[160px] sm:max-w-none">{session.user?.email}</span>
         </div>
       </header>
       <main className="p-4 sm:p-6 max-w-2xl mx-auto min-w-0 overflow-x-hidden">
