@@ -38,25 +38,25 @@ export function TemplateCreateForm({
   return (
     <form onSubmit={submit} className="space-y-3 max-w-xl">
       <div>
-        <Label htmlFor="t-name">Ad</Label>
-        <Input id="t-name" name="name" required placeholder="e.g. Standard extra work" className="mt-1" />
+        <Label htmlFor="t-name">{t('project.templateNameLabel')}</Label>
+        <Input id="t-name" name="name" required placeholder={t('project.templateNamePlaceholder')} className="mt-1" />
       </div>
       <div>
-        <Label htmlFor="t-scope">Scope metni (opsiyonel)</Label>
+        <Label htmlFor="t-scope">{t('project.templateScopeOptional')}</Label>
         <Textarea
           id="t-scope"
           name="scopeBody"
-          placeholder="CO scope narrative template..."
+          placeholder={t('project.templateScopePlaceholder')}
           rows={3}
           className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="t-lineitems">Kalemler JSON (opsiyonel)</Label>
+        <Label htmlFor="t-lineitems">{t('project.templateLineItemsOptional')}</Label>
         <Textarea
           id="t-lineitems"
           name="lineItemsJson"
-          placeholder='[{"description":"Item 1","quantity":1,"unit":"LS","unitPrice":0}]'
+          placeholder={t('project.templateLineItemsPlaceholder')}
           rows={2}
           className="mt-1 font-mono text-sm"
         />

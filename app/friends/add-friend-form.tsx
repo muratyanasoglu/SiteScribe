@@ -62,12 +62,12 @@ export function AddFriendForm() {
             id="friend-search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="@username"
+            placeholder={t('friends.searchPlaceholder')}
             className="mt-1 w-full min-w-[160px] max-w-xs"
           />
         </div>
         <Button type="submit" size="sm" disabled={loading}>
-          {loading ? '...' : t('friends.addFriend')}
+          {loading ? t('common.loading') : t('friends.searchButton')}
         </Button>
       </form>
       {error && <p className="text-sm text-destructive">{error}</p>}

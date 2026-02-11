@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth-server';
 import { validateUsername, isValidId } from '@/lib/validation';
+import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
 
 export type FriendStatus = 'none' | 'pending_sent' | 'pending_received' | 'friends';
@@ -95,6 +96,14 @@ export async function sendFriendRequest(toUserId: string) {
   await prisma.friendRequest.create({
     data: { fromUserId: me.id, toUserId, status: 'PENDING' },
   });
+  const senderLabel = me.name || me.username || me.email;
+  await createNotification({
+    userId: toUserId,
+    type: 'FRIEND_REQUEST',
+    title: `Friend request from ${senderLabel}`,
+    body: `${senderLabel} wants to add you as a friend.`,
+    link: '/friends',
+  });
   revalidatePath('/friends');
   return { ok: true };
 }
@@ -112,6 +121,14 @@ export async function acceptFriendRequest(requestId: string) {
   await prisma.friendRequest.update({
     where: { id: requestId },
     data: { status: 'ACCEPTED' },
+  });
+  const accepterLabel = me.name || me.username || me.email;
+  await createNotification({
+    userId: req.fromUserId,
+    type: 'FRIEND_ACCEPTED',
+    title: `${accepterLabel} accepted your friend request`,
+    body: `You are now friends with ${accepterLabel}.`,
+    link: '/friends',
   });
   revalidatePath('/friends');
   return { ok: true };

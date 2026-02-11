@@ -5,6 +5,7 @@ import { createEvidenceLink } from '@/app/actions/evidence-links';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useT } from '@/components/locale-provider';
 import {
   Select,
   SelectContent,
@@ -22,6 +23,7 @@ export function CreateLinkForm({
   projectId: string;
   evidenceList: EvidenceItem[];
 }) {
+  const t = useT();
   const [fromId, setFromId] = useState('');
   const [toId, setToId] = useState('');
   const [linkType, setLinkType] = useState('');
@@ -42,10 +44,10 @@ export function CreateLinkForm({
   return (
     <form onSubmit={submit} className="flex flex-wrap items-end gap-2 rounded-lg border border-border/80 p-3">
       <div>
-        <Label className="text-xs">Source</Label>
+        <Label className="text-xs">{t('project.source')}</Label>
         <Select value={fromId} onValueChange={setFromId}>
           <SelectTrigger className="w-full min-w-0 sm:w-48 max-w-[12rem] mt-1">
-            <SelectValue placeholder="Select" />
+            <SelectValue placeholder={t('common.select')} />
           </SelectTrigger>
           <SelectContent>
             {evidenceList.map((e) => (
@@ -55,10 +57,10 @@ export function CreateLinkForm({
         </Select>
       </div>
       <div>
-        <Label className="text-xs">Target</Label>
+        <Label className="text-xs">{t('project.target')}</Label>
         <Select value={toId} onValueChange={setToId}>
           <SelectTrigger className="w-full min-w-0 sm:w-48 max-w-[12rem] mt-1">
-            <SelectValue placeholder="Select" />
+            <SelectValue placeholder={t('common.select')} />
           </SelectTrigger>
           <SelectContent>
             {evidenceList.map((e) => (
@@ -68,16 +70,16 @@ export function CreateLinkForm({
         </Select>
       </div>
       <div>
-        <Label className="text-xs">Type (optional)</Label>
+        <Label className="text-xs">{t('project.typeOptional')}</Label>
         <Input
           value={linkType}
           onChange={(e) => setLinkType(e.target.value)}
-          placeholder="referans"
+          placeholder={t('project.linkTypePlaceholder')}
           className="w-full min-w-0 sm:w-24 max-w-[6rem] mt-1"
         />
       </div>
       <Button type="submit" disabled={loading || !fromId || !toId || fromId === toId}>
-        Link
+        {t('project.addLink')}
       </Button>
     </form>
   );

@@ -34,7 +34,7 @@ export function RegisterForm() {
       </div>
       <div>
         <Label htmlFor="username">{t('friends.username')} ({t('common.optional')})</Label>
-        <Input id="username" name="username" className="mt-1" placeholder="johndoe" />
+        <Input id="username" name="username" className="mt-1" placeholder={t('friends.usernamePlaceholder')} />
         <p className="text-xs text-muted-foreground mt-1">{t('friends.usernameHint')}</p>
       </div>
       <div>

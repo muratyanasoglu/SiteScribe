@@ -47,11 +47,11 @@ export function WebhookForm({ organizationId }: { organizationId: string }) {
   return (
     <form onSubmit={submit} className="space-y-3">
       <div>
-        <Label htmlFor="wh-url">URL</Label>
+        <Label htmlFor="wh-url">{t('org.webhookUrl')}</Label>
         <Input
           id="wh-url"
           type="url"
-          placeholder="https://example.com/webhook"
+          placeholder={t('org.webhookUrlPlaceholder')}
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           required
@@ -59,11 +59,11 @@ export function WebhookForm({ organizationId }: { organizationId: string }) {
         />
       </div>
       <div>
-        <Label htmlFor="wh-secret">Secret (optional, for signing)</Label>
+        <Label htmlFor="wh-secret">{t('org.webhookSecretOptional')}</Label>
         <Input
           id="wh-secret"
           type="password"
-          placeholder="••••••••"
+          placeholder={t('org.webhookSecretPlaceholder')}
           value={secret}
           onChange={(e) => setSecret(e.target.value)}
           className="mt-1"

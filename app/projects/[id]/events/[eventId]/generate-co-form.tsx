@@ -51,13 +51,13 @@ export function GenerateCODraftForm({
     <div className="flex flex-wrap items-end gap-2">
       {templates.length > 0 && (
         <div>
-          <Label className="text-xs">Template (optional)</Label>
+          <Label className="text-xs">{t('project.templateOptional')}</Label>
           <Select value={templateId} onValueChange={setTemplateId}>
             <SelectTrigger className="w-48 mt-1">
               <SelectValue placeholder={t('project.selectTemplate')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Yok</SelectItem>
+              <SelectItem value="">{t('common.none')}</SelectItem>
               {templates.map((t) => (
                 <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
               ))}
@@ -67,7 +67,7 @@ export function GenerateCODraftForm({
       )}
       <Button onClick={submit} disabled={loading}>
         {loading && <LoadingSpinner />}
-        {loading ? 'Creating…' : 'Create CO draft'}
+        {loading ? t('project.creating') : t('project.generateCODraft')}
       </Button>
     </div>
   );

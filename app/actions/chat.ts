@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth-server';
 import { validateChatMessageBody, isValidId } from '@/lib/validation';
+import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
 
 /** Check if two users are friends (ACCEPTED). */
@@ -116,6 +117,15 @@ export async function sendMessage(receiverId: string, body: string) {
   if (!receiver) return { error: 'User not found' };
   await prisma.chatMessage.create({
     data: { senderId: me.id, receiverId, body: bodyResult.body },
+  });
+  const senderLabel = me.name || me.username || me.email;
+  const bodyPreview = bodyResult.body.length > 80 ? bodyResult.body.slice(0, 80) + '…' : bodyResult.body;
+  await createNotification({
+    userId: receiverId,
+    type: 'CHAT_MESSAGE',
+    title: `Message from ${senderLabel}`,
+    body: bodyPreview,
+    link: `/chat?with=${me.id}`,
   });
   revalidatePath('/chat');
   return { ok: true };

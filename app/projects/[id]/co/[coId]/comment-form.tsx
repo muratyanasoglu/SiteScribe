@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { addComment } from '@/app/actions/comments';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useT } from '@/components/locale-provider';
 
 export function CommentForm({
   projectId,
@@ -12,6 +13,7 @@ export function CommentForm({
   projectId: string;
   changeOrderId: string;
 }) {
+  const t = useT();
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,11 +32,11 @@ export function CommentForm({
       <Textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
-        placeholder="Add a comment…"
+        placeholder={t('co.addCommentPlaceholder')}
         rows={2}
         className="flex-1"
       />
-      <Button type="submit" disabled={loading || !body.trim()}>Post</Button>
+      <Button type="submit" disabled={loading || !body.trim()}>{t('co.post')}</Button>
     </form>
   );
 }

@@ -75,18 +75,18 @@ export function InviteForm({
     <div className="mt-2 space-y-3 rounded-lg border border-border/80 p-3">
       <form onSubmit={submit} className="flex flex-wrap items-end gap-2">
         <div>
-          <Label className="text-xs">Email</Label>
+          <Label className="text-xs">{t('auth.email')}</Label>
           <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="user@example.com"
+            placeholder={t('org.emailPlaceholder')}
             className="mt-1 h-8 w-full min-w-0 sm:w-48 max-w-xs"
             required
           />
         </div>
         <div>
-          <Label className="text-xs">Role</Label>
+          <Label className="text-xs">{t('org.role')}</Label>
           <Select value={role} onValueChange={setRole}>
             <SelectTrigger className="mt-1 h-8 w-full min-w-0 sm:w-32 max-w-[8rem]">
               <SelectValue />
@@ -119,7 +119,7 @@ export function InviteForm({
             </Select>
           </div>
           <div>
-            <Label className="text-xs">Role</Label>
+            <Label className="text-xs">{t('org.role')}</Label>
             <Select value={friendRole} onValueChange={setFriendRole}>
               <SelectTrigger className="mt-1 h-8 w-full min-w-0 sm:w-32 max-w-[8rem]">
                 <SelectValue />

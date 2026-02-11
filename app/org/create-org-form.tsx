@@ -31,16 +31,16 @@ export function CreateOrgForm() {
   return (
     <form onSubmit={onSubmit} className="flex flex-wrap items-end gap-2 rounded-lg border border-border/80 p-3">
       <div>
-        <Label htmlFor="org-name">Name</Label>
+        <Label htmlFor="org-name">{t('project.name')}</Label>
         <Input id="org-name" name="name" required className="mt-1 w-full min-w-0 sm:w-48 max-w-xs" />
       </div>
       <div>
-        <Label htmlFor="org-slug">Slug (optional)</Label>
-        <Input id="org-slug" name="slug" placeholder="my-org" className="mt-1 w-full min-w-0 sm:w-32 max-w-[8rem]" />
+        <Label htmlFor="org-slug">{t('org.slugOptional')}</Label>
+        <Input id="org-slug" name="slug" placeholder={t('org.slugPlaceholder')} className="mt-1 w-full min-w-0 sm:w-32 max-w-[8rem]" />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button type="submit">Create</Button>
-      <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+      <Button type="submit">{t('project.create')}</Button>
+      <Button type="button" variant="ghost" onClick={() => setOpen(false)}>{t('org.cancel')}</Button>
     </form>
   );
 }

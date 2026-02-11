@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useToast } from '@/components/toast-provider';
+import { useT } from '@/components/locale-provider';
 
 /** Sends the export package as an email attachment via Resend. Requires RESEND_API_KEY. */
 export function ExportByEmail({
@@ -16,6 +17,7 @@ export function ExportByEmail({
   projectId: string;
   changeOrderId: string;
 }) {
+  const t = useT();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -39,11 +41,11 @@ export function ExportByEmail({
   return (
     <div className="flex flex-col sm:flex-row sm:items-end gap-2 w-full sm:w-auto">
       <div className="w-full sm:w-52 min-w-0">
-        <Label htmlFor="resend-email" className="text-xs">Send by email (Resend)</Label>
+        <Label htmlFor="resend-email" className="text-xs">{t('project.sendByEmail')}</Label>
         <Input
           id="resend-email"
           type="email"
-          placeholder="alici@example.com"
+          placeholder={t('project.emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="mt-1 w-full"
@@ -55,7 +57,7 @@ export function ExportByEmail({
         disabled={loading}
       >
         {loading && <LoadingSpinner />}
-        {loading ? 'Sending…' : 'Send by email'}
+        {loading ? t('common.sending') : t('project.sendByEmail')}
       </Button>
     </div>
   );

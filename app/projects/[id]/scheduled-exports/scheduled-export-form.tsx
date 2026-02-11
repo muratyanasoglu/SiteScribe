@@ -60,7 +60,7 @@ export function ScheduledExportForm({
           id="se-cron"
           value={cron}
           onChange={(e) => setCron(e.target.value)}
-          placeholder="0 9 * * 1"
+          placeholder={t('project.cronPlaceholder')}
           className="mt-1 font-mono"
         />
       </div>
@@ -83,7 +83,7 @@ export function ScheduledExportForm({
         <Input
           id="se-email"
           type="email"
-          placeholder="alici@example.com"
+          placeholder={t('project.emailPlaceholder')}
           value={notificationEmail}
           onChange={(e) => setNotificationEmail(e.target.value)}
           className="mt-1"

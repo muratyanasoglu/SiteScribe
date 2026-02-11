@@ -71,7 +71,7 @@ export function EvidenceUploadForm({ projectId }: { projectId: string }) {
         </Select>
       </div>
       <div>
-        <Label htmlFor="title">Title (optional)</Label>
+        <Label htmlFor="title">{t('evidenceForm.titleOptional')}</Label>
         <Input id="title" name="title" className="mt-1" />
       </div>
       <div>
@@ -80,24 +80,24 @@ export function EvidenceUploadForm({ projectId }: { projectId: string }) {
       </div>
       {type === 'SITE_LOG' && (
         <div>
-          <Label htmlFor="textContent">Content (text)</Label>
+          <Label htmlFor="textContent">{t('evidenceForm.contentText')}</Label>
           <Textarea id="textContent" name="textContent" rows={4} className="mt-1" />
         </div>
       )}
       {type !== 'SITE_LOG' && (
         <div>
-          <Label htmlFor="file">File</Label>
+          <Label htmlFor="file">{t('evidenceForm.file')}</Label>
           <Input id="file" name="file" type="file" accept={type === 'PHOTO' ? 'image/*' : 'application/pdf'} className="mt-1" />
         </div>
       )}
       <div>
-        <Label htmlFor="description">Description (optional)</Label>
+        <Label htmlFor="description">{t('evidenceForm.descriptionOptional')}</Label>
         <Textarea id="description" name="description" rows={2} className="mt-1" />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <div className="flex gap-2">
-        <Button type="submit">Upload</Button>
-        <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+        <Button type="submit">{t('evidenceForm.upload')}</Button>
+        <Button type="button" variant="ghost" onClick={() => setOpen(false)}>{t('common.cancel')}</Button>
       </div>
     </form>
   );

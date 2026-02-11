@@ -38,12 +38,12 @@ export function SetUsernameForm() {
           id="set-username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="johndoe"
+          placeholder={t('friends.usernamePlaceholder')}
           className="mt-1 w-full min-w-[140px] max-w-[200px]"
         />
       </div>
       <Button type="submit" size="sm" disabled={loading}>
-        {loading ? '...' : t('friends.setUsername')}
+        {loading ? t('common.loading') : t('friends.saveUsername')}
       </Button>
       {error && <span className="text-sm text-destructive">{error}</span>}
     </form>

@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db';
 import { requireOrgRole } from '@/lib/auth-server';
 import { validateEmail, isValidId } from '@/lib/validation';
 import { sendInviteEmail } from '@/lib/email';
+import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
 
 const INVITE_EXPIRY_DAYS = 7;
@@ -33,10 +34,20 @@ export async function inviteMember(organizationId: string, email: string, role: 
   const org = await prisma.organization.findUniqueOrThrow({ where: { id: organizationId } });
   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
   const acceptUrl = `${baseUrl}/invite/accept?token=${token}`;
-  const user = await (await import('@/lib/auth-server')).getCurrentUser();
+  const currentUser = await (await import('@/lib/auth-server')).getCurrentUser();
+  const invitedUser = await prisma.user.findUnique({ where: { email: emailResult.email } });
+  if (invitedUser) {
+    await createNotification({
+      userId: invitedUser.id,
+      type: 'INVITATION',
+      title: `Invitation to ${org.name}`,
+      body: `You've been invited to join ${org.name} as ${roleTrimmed}. Check your email for the accept link or go to Organizations.`,
+      link: '/org',
+    });
+  }
   const result = await sendInviteEmail({
     to: emailResult.email,
-    inviterName: user?.name || 'A user',
+    inviterName: currentUser?.name || 'A user',
     orgName: org.name,
     role,
     acceptUrl,

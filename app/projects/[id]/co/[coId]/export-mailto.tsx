@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useToast } from '@/components/toast-provider';
+import { useT } from '@/components/locale-provider';
 
 export function ExportAndMailto({
   projectId,
@@ -16,6 +17,7 @@ export function ExportAndMailto({
   projectId: string;
   changeOrderId: string;
 }) {
+  const t = useT();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -44,11 +46,11 @@ export function ExportAndMailto({
   return (
     <div className="flex items-end gap-2">
       <div>
-        <Label htmlFor="mailto-email" className="text-xs">Send to (mailto)</Label>
+        <Label htmlFor="mailto-email" className="text-xs">{t('project.sendToMailto')}</Label>
         <Input
           id="mailto-email"
           type="email"
-          placeholder="email@example.com"
+          placeholder={t('project.mailtoEmailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="mt-1 w-48"
@@ -56,7 +58,7 @@ export function ExportAndMailto({
       </div>
       <Button variant="outline" onClick={handleExportAndMailto} disabled={loading}>
         {loading && <LoadingSpinner />}
-        {loading ? 'Preparing…' : 'Export + mailto'}
+        {loading ? t('project.preparing') : t('co.exportMailto')}
       </Button>
     </div>
   );
