@@ -4,7 +4,13 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/db';
 import { isLoginBlocked, recordLoginFailure } from '@/lib/rate-limit';
 
+if (process.env.NODE_ENV === 'production' && !process.env.NEXTAUTH_SECRET) {
+  console.error('NEXTAUTH_SECRET is required in production. Set it in .env');
+}
+
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
+  useSecureCookies: process.env.NODE_ENV === 'production',
   providers: [
     CredentialsProvider({
       name: 'Credentials',

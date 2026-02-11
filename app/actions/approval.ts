@@ -5,9 +5,11 @@ import { requireProjectAccess } from '@/lib/auth-server';
 import { createNotification } from '@/lib/notifications';
 import { auditLog } from '@/lib/audit';
 import { triggerWebhooks } from '@/lib/webhook';
+import { isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 
 export async function requestApproval(projectId: string, changeOrderId: string) {
+  if (!isValidId(changeOrderId)) return { error: 'Invalid change order' };
   const { userId, project } = await requireProjectAccess(projectId, 'PM');
   const co = await prisma.changeOrder.findFirst({
     where: { id: changeOrderId, projectId },
@@ -46,6 +48,9 @@ export async function requestApproval(projectId: string, changeOrderId: string) 
 }
 
 export async function approveOrReject(projectId: string, changeOrderId: string, status: 'APPROVED' | 'REJECTED', note?: string) {
+  if (!isValidId(changeOrderId)) return { error: 'Invalid change order' };
+  const allowed = status === 'APPROVED' || status === 'REJECTED';
+  if (!allowed) return { error: 'Invalid status' };
   const { userId } = await requireProjectAccess(projectId, 'PM');
   await prisma.cOApproval.updateMany({
     where: { changeOrderId, userId },

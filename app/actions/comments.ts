@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db';
 import { requireProjectAccess } from '@/lib/auth-server';
 import { canComment } from '@/lib/rbac';
 import { createNotification } from '@/lib/notifications';
-import { validateCommentBody } from '@/lib/validation';
+import { validateCommentBody, isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 
 export async function addComment(
@@ -17,6 +17,8 @@ export async function addComment(
   const bodyResult = validateCommentBody(body);
   if (!bodyResult.ok) return { error: bodyResult.error };
   if (!options.changeEventId && !options.changeOrderId) return { error: 'Need event or CO' };
+  if (options.changeEventId && !isValidId(options.changeEventId)) return { error: 'Invalid event' };
+  if (options.changeOrderId && !isValidId(options.changeOrderId)) return { error: 'Invalid change order' };
   await prisma.comment.create({
     data: {
       userId,

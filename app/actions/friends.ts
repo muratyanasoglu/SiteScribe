@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth-server';
-import { validateUsername } from '@/lib/validation';
+import { validateUsername, isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 
 export type FriendStatus = 'none' | 'pending_sent' | 'pending_received' | 'friends';
@@ -21,7 +21,7 @@ export async function searchUsersByUsername(query: string): Promise<
 > {
   const me = await getCurrentUser();
   if (!me) return { error: 'Unauthorized', users: [] };
-  const q = typeof query === 'string' ? query.trim().toLowerCase() : '';
+  const q = typeof query === 'string' ? query.trim().toLowerCase().slice(0, 100) : '';
   if (q.length < 2) return { users: [] };
   const users = await prisma.user.findMany({
     where: {
@@ -75,6 +75,7 @@ export async function getUserByUsername(username: string) {
 export async function sendFriendRequest(toUserId: string) {
   const me = await getCurrentUser();
   if (!me) return { error: 'Unauthorized' };
+  if (!isValidId(toUserId)) return { error: 'Invalid user' };
   if (toUserId === me.id) return { error: 'Cannot send request to yourself' };
   const toUser = await prisma.user.findUnique({ where: { id: toUserId } });
   if (!toUser) return { error: 'User not found' };
@@ -102,6 +103,7 @@ export async function sendFriendRequest(toUserId: string) {
 export async function acceptFriendRequest(requestId: string) {
   const me = await getCurrentUser();
   if (!me) return { error: 'Unauthorized' };
+  if (!isValidId(requestId)) return { error: 'Request not found' };
   const req = await prisma.friendRequest.findUnique({
     where: { id: requestId },
   });
@@ -119,6 +121,7 @@ export async function acceptFriendRequest(requestId: string) {
 export async function declineFriendRequest(requestId: string) {
   const me = await getCurrentUser();
   if (!me) return { error: 'Unauthorized' };
+  if (!isValidId(requestId)) return { error: 'Request not found' };
   const req = await prisma.friendRequest.findUnique({
     where: { id: requestId },
   });
@@ -176,7 +179,7 @@ export async function listFriends() {
 /** Get friendship status with a user: 'none' | 'pending_sent' | 'pending_received' | 'friends'. */
 export async function getFriendStatus(otherUserId: string) {
   const me = await getCurrentUser();
-  if (!me || me.id === otherUserId) return 'none';
+  if (!me || !isValidId(otherUserId) || me.id === otherUserId) return 'none';
   const req = await prisma.friendRequest.findFirst({
     where: {
       OR: [
@@ -213,7 +216,7 @@ export async function updateUsername(newUsername: string) {
 /** List friends who are not members of the given organization (for org invite dropdown). Returns id, username, name, email. */
 export async function listFriendsNotInOrg(organizationId: string) {
   const me = await getCurrentUser();
-  if (!me) return [];
+  if (!me || !isValidId(organizationId)) return [];
   const friends = await listFriends();
   if (friends.length === 0) return [];
   const friendIds = friends.map((f) => f.id);

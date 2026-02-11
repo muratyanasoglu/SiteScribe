@@ -6,6 +6,7 @@ import { canTriageSignals } from '@/lib/rbac';
 import { detectChangeSignals } from '@/lib/detect-signals';
 import { enrichSignalsWithAi } from '@/lib/ai-signals';
 import { createNotification } from '@/lib/notifications';
+import { isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 
 export async function runDetection(projectId: string) {
@@ -51,6 +52,7 @@ export async function listEvents(projectId: string) {
 }
 
 export async function getEvent(projectId: string, eventId: string) {
+  if (!isValidId(eventId)) throw new Error('Not found');
   await requireProjectAccess(projectId, 'VIEWER');
   return prisma.changeEvent.findFirstOrThrow({
     where: { id: eventId, projectId },
@@ -63,6 +65,7 @@ export async function getEvent(projectId: string, eventId: string) {
 }
 
 export async function updateEventStatus(projectId: string, eventId: string, status: string) {
+  if (!isValidId(eventId)) return { error: 'Invalid event' };
   const { role } = await requireProjectAccess(projectId, 'PM');
   if (!canTriageSignals(role)) return { error: 'Forbidden' };
   await prisma.changeEvent.update({

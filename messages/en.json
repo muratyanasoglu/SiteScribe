@@ -34,7 +34,21 @@
     "alreadyHaveAccount": "Already have an account?",
     "invalidCredentials": "Invalid email or password",
     "registeredPleaseSignIn": "Registered. Please sign in.",
-    "backToSignIn": "Back to sign in"
+    "backToSignIn": "Back to sign in",
+    "securityQuestionTitle": "Security question (for password recovery)",
+    "securityQuestionHint": "Choose a question and answer. You will need this if you forget your password.",
+    "securityQuestionLabel": "Security question",
+    "securityQuestionChoose": "Choose a question...",
+    "securityQuestion_mother_maiden": "What is your mother's maiden name?",
+    "securityQuestion_first_pet": "What was your first pet's name?",
+    "securityQuestion_city_born": "In which city were you born?",
+    "securityQuestion_first_school": "What was the name of your first school?",
+    "securityQuestion_favorite_teacher": "What was your favorite teacher's name?",
+    "securityQuestion_father_middle": "What is your father's middle name?",
+    "securityQuestion_first_car": "What was your first car's model or name?",
+    "securityQuestion_childhood_friend": "What was your childhood best friend's name?",
+    "securityAnswer": "Your answer",
+    "securityAnswerPlaceholder": "Enter your answer"
   },
   "friends": {
     "title": "Friends",

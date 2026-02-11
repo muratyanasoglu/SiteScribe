@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db';
 import { requireProjectAccess } from '@/lib/auth-server';
+import { isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 
 export async function getEvidenceLinks(projectId: string) {
@@ -17,6 +18,7 @@ export async function getEvidenceLinks(projectId: string) {
 }
 
 export async function createEvidenceLink(projectId: string, fromId: string, toId: string, linkType?: string) {
+  if (!isValidId(fromId) || !isValidId(toId)) return { error: 'Invalid evidence' };
   await requireProjectAccess(projectId, 'FIELD');
   await prisma.evidenceLink.create({
     data: { projectId, fromId, toId, linkType: linkType || null },

@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/db';
 import { requireProjectAccess } from '@/lib/auth-server';
 import { canExport } from '@/lib/rbac';
+import { isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 
 export async function listScheduledExports(projectId: string) {
@@ -20,11 +21,13 @@ export async function createScheduledExport(
 ) {
   const { role } = await requireProjectAccess(projectId, 'PM');
   if (!canExport(role)) return { error: 'Forbidden' };
+  const changeOrderId = data.changeOrderId?.trim();
+  if (changeOrderId != null && changeOrderId !== '' && !isValidId(changeOrderId)) return { error: 'Invalid change order' };
   const cron = (data.cron || '0 9 * * 1').trim(); // default: her Pazartesi 09:00
   await prisma.scheduledExport.create({
     data: {
       projectId,
-      changeOrderId: data.changeOrderId || null,
+      changeOrderId: changeOrderId || null,
       cron,
       enabled: true,
       notificationEmail: data.notificationEmail?.trim() || null,
@@ -35,6 +38,7 @@ export async function createScheduledExport(
 }
 
 export async function deleteScheduledExport(projectId: string, scheduledExportId: string) {
+  if (!isValidId(scheduledExportId)) return { error: 'Invalid schedule' };
   await requireProjectAccess(projectId, 'PM');
   await prisma.scheduledExport.deleteMany({
     where: { id: scheduledExportId, projectId },
@@ -48,6 +52,7 @@ export async function toggleScheduledExport(
   scheduledExportId: string,
   enabled: boolean
 ) {
+  if (!isValidId(scheduledExportId)) return { error: 'Invalid schedule' };
   await requireProjectAccess(projectId, 'PM');
   await prisma.scheduledExport.updateMany({
     where: { id: scheduledExportId, projectId },

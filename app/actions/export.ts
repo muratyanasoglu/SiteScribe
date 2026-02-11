@@ -3,12 +3,14 @@
 import { prisma } from '@/lib/db';
 import { requireProjectAccess } from '@/lib/auth-server';
 import { canExport } from '@/lib/rbac';
+import { isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 import { createExportJob, createExportJobFromBuffers } from '@/lib/export-job';
 import { generateExport } from '@/lib/export-package';
 import { sendExportEmail } from '@/lib/email';
 
 export async function createExport(projectId: string, changeOrderId: string) {
+  if (!isValidId(changeOrderId)) return { error: 'Invalid change order' };
   const { role } = await requireProjectAccess(projectId, 'VIEWER');
   if (!canExport(role)) return { error: 'Forbidden' };
   const { job, pdfUrl, zipUrl, manifest } = await createExportJob(projectId, changeOrderId);
@@ -22,6 +24,7 @@ export async function sendExportByEmail(
   changeOrderId: string,
   recipientEmail: string
 ) {
+  if (!isValidId(changeOrderId)) return { error: 'Invalid change order' };
   const { role } = await requireProjectAccess(projectId, 'VIEWER');
   if (!canExport(role)) return { error: 'Forbidden' };
   const co = await prisma.changeOrder.findFirst({
@@ -76,6 +79,7 @@ export async function recordSentAndGetMailto(
   exportJobId: string,
   recipientEmail: string
 ) {
+  if (!isValidId(changeOrderId) || !isValidId(exportJobId)) return { error: 'Invalid request' };
   await requireProjectAccess(projectId, 'FIELD');
   await prisma.sentLog.create({
     data: {

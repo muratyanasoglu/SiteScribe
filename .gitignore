@@ -83,6 +83,13 @@ local.config.*
 *.pfx
 *.crt
 
+# Credential / secret files (API keys, service accounts)
+credentials.json
+*-credentials*.json
+service-account*.json
+.secrets
+*.secret
+
 # Vercel / hosting (may link to your account or team)
 .vercel
 

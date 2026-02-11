@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/db';
 import { requireOrgRole, requireProjectAccess } from '@/lib/auth-server';
+import { isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 
 export async function listTemplates(organizationId: string) {
@@ -32,6 +33,7 @@ export async function createTemplate(organizationId: string, formData: FormData)
 
 export async function deleteTemplate(organizationId: string, templateId: string) {
   await requireOrgRole(organizationId, 'PM');
+  if (!isValidId(templateId)) return { error: 'Invalid template' };
   await prisma.cOTemplate.deleteMany({
     where: { id: templateId, organizationId },
   });

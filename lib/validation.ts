@@ -21,7 +21,22 @@ const LIMITS = {
   evidenceTitle: 500,
   evidenceDescription: 5000,
   evidenceFileSizeMax: 8 * 1024 * 1024, // 8 MB
+  securityAnswerMin: 2,
+  securityAnswerMax: 200,
 } as const;
+
+/** Allowed security question keys (for "forgot password" recovery). */
+export const SECURITY_QUESTION_KEYS = [
+  'mother_maiden',
+  'first_pet',
+  'city_born',
+  'first_school',
+  'favorite_teacher',
+  'father_middle',
+  'first_car',
+  'childhood_friend',
+] as const;
+export type SecurityQuestionKey = (typeof SECURITY_QUESTION_KEYS)[number];
 
 /** Allowed MIME types for evidence file uploads (images and PDF only). */
 export const ALLOWED_EVIDENCE_MIMES = [
@@ -77,6 +92,23 @@ export function validateName(input: unknown, fieldName = 'Ad'): { ok: true; name
   const name = sanitizeString(input, LIMITS.name);
   if (!name) return { ok: false, error: `${fieldName} gerekli` };
   return { ok: true, name };
+}
+
+/** Security question key (must be one of SECURITY_QUESTION_KEYS). */
+export function validateSecurityQuestionKey(input: unknown): { ok: true; key: SecurityQuestionKey } | { ok: false; error: string } {
+  const raw = typeof input === 'string' ? input.trim() : '';
+  if (!raw || !SECURITY_QUESTION_KEYS.includes(raw as SecurityQuestionKey)) {
+    return { ok: false, error: 'Please select a security question' };
+  }
+  return { ok: true, key: raw as SecurityQuestionKey };
+}
+
+/** Security answer: min/max length, trimmed (stored hashed). */
+export function validateSecurityAnswer(input: unknown): { ok: true; answer: string } | { ok: false; error: string } {
+  const raw = typeof input === 'string' ? input.trim() : '';
+  if (raw.length < LIMITS.securityAnswerMin) return { ok: false, error: 'Answer must be at least 2 characters' };
+  if (raw.length > LIMITS.securityAnswerMax) return { ok: false, error: 'Answer too long' };
+  return { ok: true, answer: raw };
 }
 
 /** Username: 3–30 chars, alphanumeric + underscore (for friend search) */

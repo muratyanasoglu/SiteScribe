@@ -6,6 +6,7 @@ import { canEditChangeOrder } from '@/lib/rbac';
 import { generateCODraft } from '@/lib/co-draft';
 import { auditLog } from '@/lib/audit';
 import { triggerWebhooks } from '@/lib/webhook';
+import { isValidId } from '@/lib/validation';
 import { revalidatePath } from 'next/cache';
 
 export async function createChangeOrderDraft(
@@ -13,6 +14,8 @@ export async function createChangeOrderDraft(
   changeEventId: string,
   options?: { templateId?: string }
 ) {
+  if (!isValidId(changeEventId)) return { error: 'Invalid event' };
+  if (options?.templateId != null && !isValidId(options.templateId)) return { error: 'Invalid template' };
   const { userId, role, project } = await requireProjectAccess(projectId, 'PM');
   if (!canEditChangeOrder(role)) return { error: 'Forbidden' };
 
@@ -69,6 +72,7 @@ export async function listChangeOrders(projectId: string) {
 }
 
 export async function getChangeOrder(projectId: string, coId: string) {
+  if (!isValidId(coId)) throw new Error('Not found');
   await requireProjectAccess(projectId, 'VIEWER');
   return prisma.changeOrder.findFirstOrThrow({
     where: { id: coId, projectId },
@@ -96,6 +100,7 @@ export async function updateChangeOrder(
     status?: string;
   }
 ) {
+  if (!isValidId(coId)) return;
   const { userId, role } = await requireProjectAccess(projectId, 'PM');
   if (!canEditChangeOrder(role)) return;
   await prisma.changeOrder.update({
@@ -117,6 +122,7 @@ export async function addLineItem(
   coId: string,
   formData: FormData
 ) {
+  if (!isValidId(coId)) return { error: 'Invalid change order' };
   const { role } = await requireProjectAccess(projectId, 'PM');
   if (!canEditChangeOrder(role)) return { error: 'Forbidden' };
   const description = formData.get('description') as string;
