@@ -1,0 +1,491 @@
+// SiteScribe - MySQL 8.x (Prisma provider = "mysql")
+// Compatible with MySQL Workbench. No Postgres-only features.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ Multi-tenant & RBAC ============
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships   Membership[]
+  projects      Project[]
+  invitations   Invitation[]
+  coTemplates   COTemplate[]
+  webhooks      Webhook[]
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  passwordHash   String    @map("password_hash")
+  name           String?
+  username       String?   @unique
+  emailVerified  DateTime? @map("email_verified")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  memberships    Membership[]
+  comments       Comment[]
+  notifications  Notification[]
+  friendRequestsSent     FriendRequest[] @relation("FriendRequestFrom")
+  friendRequestsReceived FriendRequest[] @relation("FriendRequestTo")
+  messagesSent          ChatMessage[]   @relation("ChatMessageSender")
+  messagesReceived      ChatMessage[]   @relation("ChatMessageReceiver")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  OWNER
+  PM
+  FIELD
+  SUBCONTRACTOR
+  VIEWER
+}
+
+model Membership {
+  id             String       @id @default(cuid())
+  organizationId String       @map("organization_id")
+  userId         String       @map("user_id")
+  role           Role
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+}
+
+// ============ Projects ============
+model Project {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  name           String
+  description    String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  evidence       Evidence[]
+  evidenceLinks  EvidenceLink[]
+  changeEvents   ChangeEvent[]
+  changeOrders    ChangeOrder[]
+  exportJobs      ExportJob[]
+  scheduledExports ScheduledExport[]
+
+  @@index([organizationId])
+}
+
+// ============ Evidence ============
+enum EvidenceType {
+  SITE_LOG
+  PHOTO
+  RFI_DOC
+  PLAN_REVISION
+  CONTRACT
+}
+
+model Evidence {
+  id          String       @id @default(cuid())
+  projectId   String       @map("project_id")
+  type        EvidenceType
+  title       String?
+  description String?      @db.Text
+  occurredAt  DateTime     @map("occurred_at")
+  fileUrl     String?      @map("file_url")   // storage URL
+  fileHash    String?      @map("file_hash")  // SHA-256
+  mimeType    String?      @map("mime_type")
+  size        Int?         // bytes
+  extractedText String?    @map("extracted_text") @db.LongText
+  metadata    Json?        // optional extra fields
+  aiSummary   String?     @map("ai_summary") @db.Text
+  aiSuggestedType String?  @map("ai_suggested_type") // SITE_LOG | PHOTO | RFI_DOC | PLAN_REVISION | CONTRACT
+  aiEmbedding Json?        @map("ai_embedding")     // [number] for semantic search
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  createdBy   String?      @map("created_by") // userId optional
+
+  project       Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  chunks        EvidenceChunk[]
+  eventSignals  EventSignal[]
+  evidenceLinksFrom EvidenceLink[] @relation("EvidenceLinksFrom")
+  evidenceLinksTo   EvidenceLink[] @relation("EvidenceLinksTo")
+
+  @@index([projectId])
+  @@index([projectId, type])
+  @@index([projectId, occurredAt])
+}
+
+model EvidenceChunk {
+  id         String   @id @default(cuid())
+  evidenceId String   @map("evidence_id")
+  index      Int      // chunk order
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+
+  evidence Evidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+
+  @@index([evidenceId])
+}
+
+model EvidenceLink {
+  id         String   @id @default(cuid())
+  projectId  String   @map("project_id")
+  fromId     String   @map("from_id")
+  toId       String   @map("to_id")
+  linkType   String?  @map("link_type")
+  createdAt  DateTime @default(now())
+
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fromEvidence Evidence @relation("EvidenceLinksFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  toEvidence   Evidence @relation("EvidenceLinksTo", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([fromId, toId])
+}
+
+// ============ Change detection ============
+model ChangeEvent {
+  id          String   @id @default(cuid())
+  projectId   String   @map("project_id")
+  title       String
+  description String?  @db.Text
+  status      String   @default("DETECTED") // DETECTED | TRIAGE | DRAFTING | SENT | APPROVED | REJECTED | DISPUTE
+  occurredAt  DateTime @map("occurred_at")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  project      Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  signals      EventSignal[]
+  changeOrders ChangeOrder[]
+  comments     Comment[]
+
+  @@index([projectId])
+  @@index([projectId, status])
+}
+
+model EventSignal {
+  id             String   @id @default(cuid())
+  changeEventId  String   @map("change_event_id")
+  evidenceId     String   @map("evidence_id")
+  score          Float    // 0-1 heuristic score
+  reason         String?  @db.Text
+  aiSignalType   String?  @map("ai_signal_type")   // risk | claim | force_majeure | scope_change | delay | cost | etc.
+  createdAt      DateTime @default(now())
+
+  changeEvent ChangeEvent @relation(fields: [changeEventId], references: [id], onDelete: Cascade)
+  evidence    Evidence    @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+
+  @@index([changeEventId])
+  @@index([evidenceId])
+}
+
+// ============ Change Orders ============
+model ChangeOrder {
+  id              String   @id @default(cuid())
+  projectId       String   @map("project_id")
+  changeEventId   String?  @map("change_event_id")
+  title           String
+  scopeNarrative  String?  @map("scope_narrative") @db.Text
+  contractClauses String?  @map("contract_clauses") @db.Text
+  assumptions     String?  @db.Text
+  exclusions      String?  @db.Text
+  scheduleImpactDays Int?  @map("schedule_impact_days")
+  aiCostEstimate  String?  @map("ai_cost_estimate") @db.Text  // e.g. "+15.000 TL"
+  aiRiskLevel     String?  @map("ai_risk_level")    // LOW | MEDIUM | HIGH
+  status          String   @default("DRAFT") // DRAFT | SENT | APPROVED | REJECTED | DISPUTE
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  project       Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  changeEvent   ChangeEvent?        @relation(fields: [changeEventId], references: [id], onDelete: SetNull)
+  lineItems     ChangeOrderLineItem[]
+  comments      Comment[]
+  exportJobs    ExportJob[]
+  sentLogs      SentLog[]
+  approvals     COApproval[]
+
+  @@index([projectId])
+  @@index([changeEventId])
+}
+
+// ============ Friends ============
+model FriendRequest {
+  id        String   @id @default(cuid())
+  fromUserId String  @map("from_user_id")
+  toUserId   String  @map("to_user_id")
+  status    String   @default("PENDING")  // PENDING | ACCEPTED | DECLINED
+  createdAt DateTime @default(now())
+
+  fromUser User @relation("FriendRequestFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser   User @relation("FriendRequestTo", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId])
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([status])
+}
+
+// ============ Chat (friends only) ============
+model ChatMessage {
+  id         String    @id @default(cuid())
+  senderId   String    @map("sender_id")
+  receiverId String   @map("receiver_id")
+  body       String   @db.Text
+  readAt     DateTime? @map("read_at")
+  createdAt  DateTime  @default(now())
+
+  sender   User @relation("ChatMessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ChatMessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([senderId, receiverId])
+  @@index([receiverId, senderId])
+  @@index([createdAt])
+}
+
+// ============ Invitation ============
+model Invitation {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  email          String
+  role           Role
+  token          String   @unique
+  expiresAt      DateTime @map("expires_at")
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([token])
+}
+
+// ============ CO Template Library ============
+model COTemplate {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  name           String
+  scopeBody      String?  @map("scope_body") @db.Text
+  lineItemsJson  Json?    @map("line_items_json") // [{ description, quantity, unit, unitPrice }]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+// ============ Notifications ============
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  type      String    // NEW_SIGNAL | CO_PENDING | COMMENT | etc.
+  title     String
+  body      String?   @db.Text
+  link      String?   // /projects/x/events/y
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, readAt])
+}
+
+// ============ Audit Log ============
+model AuditLog {
+  id         String   @id @default(cuid())
+  entityType String   @map("entity_type") // ChangeOrder | Evidence | etc.
+  entityId   String   @map("entity_id")
+  userId     String   @map("user_id")
+  action     String   // CREATE | UPDATE | STATUS_CHANGE
+  changesJson Json?   @map("changes_json")
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+}
+
+// ============ CO Approval / E-sign ============
+model COApproval {
+  id             String    @id @default(cuid())
+  changeOrderId  String    @map("change_order_id")
+  userId         String    @map("user_id")
+  status         String    // PENDING | APPROVED | REJECTED
+  signedAt       DateTime? @map("signed_at")
+  note           String?   @db.Text
+  createdAt      DateTime  @default(now())
+
+  changeOrder ChangeOrder @relation(fields: [changeOrderId], references: [id], onDelete: Cascade)
+
+  @@unique([changeOrderId, userId])
+  @@index([changeOrderId])
+}
+
+// ============ Webhook ============
+model Webhook {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  projectId      String?  @map("project_id")
+  url            String   @db.Text
+  events         String   @db.Text // JSON array: ["co.created","co.status_changed"]
+  secret         String?  @db.Text
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+// ============ Scheduled Export ============
+model ScheduledExport {
+  id                 String    @id @default(cuid())
+  projectId          String    @map("project_id")
+  changeOrderId      String?   @map("change_order_id") // null = all COs for this project
+  cron               String    // e.g. "0 9 * * 1" = every Monday 09:00
+  lastRunAt          DateTime? @map("last_run_at")
+  enabled            Boolean   @default(true)
+  notificationEmail  String?   @map("notification_email") // optional: send email after export
+  createdAt          DateTime  @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model ChangeOrderLineItem {
+  id             String   @id @default(cuid())
+  changeOrderId  String   @map("change_order_id")
+  description    String   @db.Text
+  quantity       Float?
+  unit           String?
+  unitPrice      Float?   @map("unit_price")
+  amount         Float?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  changeOrder ChangeOrder @relation(fields: [changeOrderId], references: [id], onDelete: Cascade)
+
+  @@index([changeOrderId])
+}
+
+// ============ Collaboration ============
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+
+  // Polymorphic: either changeEventId or changeOrderId
+  changeEventId String? @map("change_event_id")
+  changeOrderId String? @map("change_order_id")
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  changeEvent ChangeEvent?  @relation(fields: [changeEventId], references: [id], onDelete: Cascade)
+  changeOrder ChangeOrder?  @relation(fields: [changeOrderId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([changeEventId])
+  @@index([changeOrderId])
+}
+
+// ============ Export & Sent ============
+model ExportJob {
+  id             String   @id @default(cuid())
+  projectId      String   @map("project_id")
+  changeOrderId  String   @map("change_order_id")
+  status         String   @default("PENDING") // PENDING | COMPLETED | FAILED
+  pdfUrl         String?  @map("pdf_url")
+  zipUrl         String?  @map("zip_url")
+  manifestJson   Json?    @map("manifest_json")
+  createdAt      DateTime @default(now())
+  completedAt    DateTime?
+
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  changeOrder  ChangeOrder  @relation(fields: [changeOrderId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([changeOrderId])
+}
+
+model SentLog {
+  id             String   @id @default(cuid())
+  changeOrderId  String   @map("change_order_id")
+  sentAt         DateTime @default(now())
+  sentTo         String?  @map("sent_to")   // email or "mailto"
+  method         String?  // "mailto" | "smtp" (stub)
+  exportJobId    String?  @map("export_job_id")
+
+  changeOrder ChangeOrder @relation(fields: [changeOrderId], references: [id], onDelete: Cascade)
+
+  @@index([changeOrderId])
+}
+
+// ============ AI usage (Mistral token/cost tracking) ============
+model AiUsageLog {
+  id             String   @id @default(cuid())
+  organizationId String?  @map("organization_id")
+  projectId      String?  @map("project_id")
+  operation      String   // co_draft | evidence_summary | semantic_search | chat | signal_score | etc.
+  model          String?
+  inputTokens    Int?     @map("input_tokens")
+  outputTokens   Int?     @map("output_tokens")
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([createdAt])
+}

@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --primary: 230 75% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 230 75% 97%;
+    --accent-foreground: 230 75% 40%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 230 75% 50%;
+    --radius: 0.625rem;
+    --radius-lg: 0.75rem;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.06), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.06), 0 8px 10px -6px rgb(0 0 0 / 0.04);
+    --shadow-glow: 0 0 0 1px rgb(30 58 138 / 0.08);
+  }
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 98%;
+    --primary: 230 85% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 230 40% 18%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 41%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 230 85% 58%;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.15);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.15);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.15);
+    --shadow-glow: 0 0 0 1px rgb(59 130 246 / 0.15);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    min-height: 100%;
+  }
+  body {
+    @apply bg-background text-foreground overflow-x-hidden antialiased;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  body > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+    letter-spacing: -0.02em;
+  }
+  .card-interactive {
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .card-interactive:hover {
+    box-shadow: var(--shadow-md);
+  }
+  .dark .card-interactive:hover {
+    box-shadow: var(--shadow-md);
+  }
+  .page-header {
+    @apply border-b border-border/80 bg-card/50 backdrop-blur-sm;
+  }
+  .nav-link {
+    @apply rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground;
+  }
+  .nav-link-active {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  /* Landing: premium & readable */
+  .landing-section {
+    @apply py-20 sm:py-28 lg:py-32;
+  }
+  .landing-heading {
+    @apply text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+  .landing-subheading {
+    @apply mt-5 max-w-2xl text-lg text-muted-foreground sm:text-xl;
+    line-height: 1.65;
+  }
+  .landing-card {
+    @apply rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm transition-all duration-300;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
+  }
+  .landing-card:hover {
+    @apply border-primary/20;
+    box-shadow: 0 8px 30px rgb(0 0 0 / 0.08), 0 0 0 1px hsl(var(--primary) / 0.08);
+  }
+  .dark .landing-card:hover {
+    box-shadow: 0 8px 30px rgb(0 0 0 / 0.25), 0 0 0 1px hsl(var(--primary) / 0.2);
+  }
+  .landing-gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(250 70% 55%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .landing-badge {
+    @apply inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-semibold tracking-wide text-primary;
+  }
+  .landing-cta-glow {
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.4);
+  }
+  .landing-cta-glow:hover {
+    box-shadow: 0 6px 28px hsl(var(--primary) / 0.5);
+  }
+  .landing-mesh {
+    background-image:
+      radial-gradient(at 40% 20%, hsl(var(--primary) / 0.08) 0%, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--primary) / 0.05) 0%, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--primary) / 0.06) 0%, transparent 50%);
+  }
+  .dark .landing-mesh {
+    background-image:
+      radial-gradient(at 40% 20%, hsl(var(--primary) / 0.15) 0%, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--primary) / 0.1) 0%, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--primary) / 0.12) 0%, transparent 50%);
+  }
+  @keyframes landing-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-landing-fade {
+    animation: landing-fade-in 0.5s ease-out forwards;
+  }
+}
