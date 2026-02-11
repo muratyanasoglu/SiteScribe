@@ -47,34 +47,36 @@ export default async function ChatPage({
     : '';
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="page-header sticky top-0 z-30 p-4 sm:px-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b border-border/80">
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('nav.siteScribe')}</h1>
-        <div className="flex flex-wrap gap-2 items-center">
+    <div className="min-h-[100dvh] sm:min-h-screen bg-background flex flex-col">
+      <header className="page-header sticky top-0 z-30 shrink-0 p-3 sm:p-4 sm:px-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 border-b border-border/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="flex items-center justify-between gap-2 min-w-0">
+          <h1 className="text-lg sm:text-2xl font-bold tracking-tight truncate">{t('nav.siteScribe')}</h1>
+        </div>
+        <div className="flex flex-wrap gap-2 items-center justify-end sm:justify-between overflow-x-auto overflow-y-hidden py-1 -mx-1 scrollbar-thin">
           <ThemeToggle />
           <LanguageSwitcher />
-          <Link href="/guide">{t('nav.guide')}</Link>
+          <Link href="/guide" className="text-sm whitespace-nowrap">{t('nav.guide')}</Link>
           <Link href="/friends">
-            <Button variant="ghost" size="sm">{t('nav.friends')}</Button>
+            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation">{t('nav.friends')}</Button>
           </Link>
           <Link href="/org">
-            <Button variant="ghost" size="sm">{t('nav.organizations')}</Button>
+            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation">{t('nav.organizations')}</Button>
           </Link>
           <Link href="/notifications">
-            <Button variant="ghost" size="sm">{t('nav.notifications')}</Button>
+            <Button variant="ghost" size="sm" className="min-h-10 min-w-10 touch-manipulation">{t('nav.notifications')}</Button>
           </Link>
-          <span className="text-sm text-muted-foreground truncate max-w-[180px]">{session.user?.email}</span>
+          <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[120px] sm:max-w-[180px]">{session.user?.email}</span>
           <form action="/api/auth/signout" method="POST">
-            <Button type="submit" variant="outline" size="sm">{t('nav.signOut')}</Button>
+            <Button type="submit" variant="outline" size="sm" className="min-h-10 touch-manipulation">{t('nav.signOut')}</Button>
           </form>
         </div>
       </header>
-      <div className="flex-1 flex min-h-0">
-        <aside className="w-full sm:w-72 border-r border-border/80 flex flex-col bg-muted/20">
-          <div className="p-3 border-b border-border/80">
+      <div className="flex-1 flex min-h-0 overflow-hidden">
+        <aside className={`w-full sm:w-72 border-r border-border/80 bg-muted/20 shrink-0 min-h-0 flex flex-col ${otherUser ? 'hidden sm:flex' : ''}`}>
+          <div className="p-3 border-b border-border/80 shrink-0">
             <h2 className="font-semibold text-sm">{t('chat.conversations')}</h2>
           </div>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain min-h-0">
             {conversations.length === 0 ? (
               <p className="p-4 text-sm text-muted-foreground">{t('chat.noConversations')}</p>
             ) : (
@@ -86,11 +88,11 @@ export default async function ChatPage({
                     <li key={c.otherUser.id}>
                       <Link
                         href={`/chat?with=${encodeURIComponent(c.otherUser.id)}`}
-                        className={`block rounded-lg p-3 text-sm transition-colors ${
-                          isActive ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
+                        className={`rounded-lg p-3 text-sm transition-colors min-h-[52px] flex flex-col justify-center touch-manipulation ${
+                          isActive ? 'bg-primary text-primary-foreground' : 'hover:bg-muted active:bg-muted/80'
                         }`}
                       >
-                        <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center justify-between gap-2 min-w-0">
                           <span className="font-medium truncate">{name}</span>
                           {c.unreadCount > 0 && (
                             <span className="shrink-0 rounded-full bg-destructive text-destructive-foreground text-xs px-2 py-0.5">
@@ -112,11 +114,18 @@ export default async function ChatPage({
             )}
           </div>
         </aside>
-        <section className="flex-1 flex flex-col min-w-0">
+        <section className={`flex-1 flex flex-col min-w-0 min-h-0 ${otherUser ? 'flex' : 'hidden sm:flex'}`}>
           {otherUser && currentUserId ? (
             <>
-              <div className="border-b border-border/80 px-4 py-2">
-                <h3 className="font-medium">{otherDisplayName}</h3>
+              <div className="border-b border-border/80 px-3 sm:px-4 py-3 shrink-0 flex items-center gap-2 bg-background">
+                <Link
+                  href="/chat"
+                  className="sm:hidden flex items-center justify-center w-10 h-10 rounded-lg -ml-2 touch-manipulation text-muted-foreground hover:bg-muted hover:text-foreground"
+                  aria-label={t('chat.conversations')}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </Link>
+                <h3 className="font-medium truncate flex-1">{otherDisplayName}</h3>
               </div>
               <ChatThread
                 otherUserId={otherUser.id}
@@ -126,8 +135,8 @@ export default async function ChatPage({
               />
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground p-4">
-              <p className="text-center">{t('chat.selectConversation')}</p>
+            <div className="flex-1 flex items-center justify-center text-muted-foreground p-4 min-h-0">
+              <p className="text-center text-sm sm:text-base">{t('chat.selectConversation')}</p>
             </div>
           )}
         </section>
