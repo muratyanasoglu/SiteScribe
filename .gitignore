@@ -113,3 +113,7 @@ service-account*.json
 .npm
 .eslintcache
 .stylelintcache
+
+# Local / not for push
+image/README/
+future-developments.md
