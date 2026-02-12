@@ -51,7 +51,7 @@ export function ProjectsLayoutClient({
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
-      <header className="md:hidden flex items-center justify-between page-header px-4 py-3 sticky top-0 z-40">
+      <header className="md:hidden flex items-center justify-between page-header px-4 py-3 sticky top-0 z-[60]">
         <button
           type="button"
           onClick={() => setMenuOpen(true)}

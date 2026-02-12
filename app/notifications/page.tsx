@@ -21,7 +21,7 @@ export default async function NotificationsPage() {
   const t = createT(messages);
   return (
     <div className="min-h-screen bg-background">
-      <header className="page-header sticky top-0 z-30 p-4 sm:px-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+      <header className="page-header sticky top-0 z-[60] p-4 sm:px-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('nav.siteScribe')}</h1>
         <div className="flex items-center gap-2">
           <MobileNavMenu>

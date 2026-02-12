@@ -49,7 +49,7 @@ export default async function ChatPage({
 
   return (
     <div className="min-h-[100dvh] sm:min-h-screen bg-background flex flex-col">
-      <header className="page-header sticky top-0 z-30 shrink-0 p-3 sm:p-4 sm:px-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 border-b border-border/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <header className="page-header sticky top-0 z-[60] shrink-0 p-3 sm:p-4 sm:px-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 border-b border-border/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="flex items-center justify-between gap-2 min-w-0">
           <h1 className="text-lg sm:text-2xl font-bold tracking-tight truncate">{t('nav.siteScribe')}</h1>
         </div>

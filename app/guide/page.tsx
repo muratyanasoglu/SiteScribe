@@ -15,7 +15,7 @@ export default async function GuidePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="page-header sticky top-0 z-30 p-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+      <header className="page-header sticky top-0 z-[60] p-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <Link href="/">
             <Button variant="outline" size="sm">{t('guide.backHome')}</Button>

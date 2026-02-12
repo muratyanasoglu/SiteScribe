@@ -10,7 +10,7 @@ import { useT } from '@/components/locale-provider';
 export function LandingNav() {
   const t = useT();
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+    <header className="sticky top-0 z-[60] w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
       <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-8">
         <Link
           href="/"

@@ -28,7 +28,7 @@ export default async function OrgWebhooksPage({
   if (!orgId) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="page-header sticky top-0 z-30 p-4 sm:px-6 flex justify-between items-center">
+        <header className="page-header sticky top-0 z-[60] p-4 sm:px-6 flex justify-between items-center">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('nav.siteScribe')}</h1>
           <div className="flex items-center gap-2">
             <MobileNavMenu>
@@ -73,7 +73,7 @@ export default async function OrgWebhooksPage({
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="page-header sticky top-0 z-30 p-4 sm:px-6 flex justify-between items-center">
+      <header className="page-header sticky top-0 z-[60] p-4 sm:px-6 flex justify-between items-center">
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t('nav.siteScribe')}</h1>
         <div className="flex items-center gap-2">
           <MobileNavMenu>
