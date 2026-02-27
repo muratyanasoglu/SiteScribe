@@ -7,6 +7,7 @@ import { ToastProvider } from '@/components/toast-provider';
 import { LocaleProvider } from '@/components/locale-provider';
 import { HelpChatWidget } from '@/components/help-chat-widget';
 import { ScrollToTop } from '@/components/scroll-to-top';
+import { LandingFooter } from '@/components/landing';
 import { getLocaleFromCookie, getMessages } from '@/lib/i18n';
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -44,6 +45,7 @@ export default async function RootLayout({
             <SessionProvider>
               <ToastProvider>
                 {children}
+                <LandingFooter />
                 <ScrollToTop />
                 <HelpChatWidget />
               </ToastProvider>

@@ -8,7 +8,6 @@ import {
   LandingHowItWorks,
   LandingOpenSource,
   LandingCta,
-  LandingFooter,
 } from './index';
 
 export function LandingView() {
@@ -24,7 +23,6 @@ export function LandingView() {
         <LandingHowItWorks />
         <LandingOpenSource />
         <LandingCta />
-        <LandingFooter />
       </main>
     </div>
   );

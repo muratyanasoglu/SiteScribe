@@ -287,13 +287,6 @@
     "save": "Save",
     "descriptionPlaceholder": "Description",
     "unitPlaceholder": "LS",
-    "contractClauses": "Contract clause references (citations)",
-    "assumptions": "Assumptions",
-    "exclusions": "Exclusions",
-    "scheduleImpactDays": "Schedule impact (days)",
-    "status": "Status",
-    "save": "Save",
-    "saving": "Saving…",
     "costLineItems": "Cost line items",
     "description": "Description",
     "qty": "Qty",
@@ -513,7 +506,13 @@
       "documentation": "Documentation",
       "signIn": "Sign in",
       "getStarted": "Get started",
-      "openSourceFree": "· Open source · Free"
+      "openSourceFree": "· Open source · Free",
+      "mered": {
+        "developedBy": "Developed by Mered Technology",
+        "officialWebsite": "Official corporate website",
+        "visitButton": "Visit",
+        "rights": "Mered Technology. All rights reserved."
+      }
     }
   },
   "docs": {
