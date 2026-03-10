@@ -10,13 +10,18 @@ if (process.env.NODE_ENV === 'production' && !process.env.NEXTAUTH_SECRET) {
   console.error('NEXTAUTH_SECRET is required in production. Set it in .env');
 }
 
-/** Find or create User by email for OAuth sign-in. Returns DB user id. */
+/** Find or create User by email for OAuth sign-in. Returns DB user id. Username is set to email. */
 async function findOrCreateOAuthUser(email: string, name: string | null): Promise<string> {
   const normalized = email.toLowerCase().trim();
   let user = await prisma.user.findUnique({ where: { email: normalized } });
   if (!user) {
     user = await prisma.user.create({
-      data: { email: normalized, name: name ?? null, passwordHash: null },
+      data: { email: normalized, name: name ?? null, passwordHash: null, username: normalized },
+    });
+  } else if (!user.username || user.username.trim() === '') {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { username: normalized },
     });
   }
   return user.id;

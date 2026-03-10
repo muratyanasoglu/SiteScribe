@@ -30,23 +30,23 @@ export function ProfileForm({ profile }: { profile: Profile }) {
   const [securityError, setSecurityError] = useState('');
   const [securitySuccess, setSecuritySuccess] = useState(false);
   const [securityLoading, setSecurityLoading] = useState(false);
-  const [setPasswordError, setSetPasswordError] = useState('');
-  const [setPasswordSuccess, setSetPasswordSuccess] = useState(false);
-  const [setPasswordLoading, setSetPasswordLoading] = useState(false);
+  const [oauthPasswordError, setOauthPasswordError] = useState('');
+  const [oauthPasswordSuccess, setOauthPasswordSuccess] = useState(false);
+  const [oauthPasswordLoading, setOauthPasswordLoading] = useState(false);
 
   async function handleSetPasswordSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSetPasswordError('');
-    setSetPasswordSuccess(false);
-    setSetPasswordLoading(true);
+    setOauthPasswordError('');
+    setOauthPasswordSuccess(false);
+    setOauthPasswordLoading(true);
     const formData = new FormData(e.currentTarget);
     const result = await setPassword(formData);
-    setSetPasswordLoading(false);
+    setOauthPasswordLoading(false);
     if (result?.error) {
-      setSetPasswordError(result.error);
+      setOauthPasswordError(result.error);
       return;
     }
-    setSetPasswordSuccess(true);
+    setOauthPasswordSuccess(true);
     (e.target as HTMLFormElement).reset();
   }
 
@@ -206,10 +206,10 @@ export function ProfileForm({ profile }: { profile: Profile }) {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSetPasswordSubmit} className="space-y-4">
-              {setPasswordError && (
-                <p className="rounded bg-destructive/10 text-sm text-destructive">{setPasswordError}</p>
+              {oauthPasswordError && (
+                <p className="rounded bg-destructive/10 text-sm text-destructive">{oauthPasswordError}</p>
               )}
-              {setPasswordSuccess && (
+              {oauthPasswordSuccess && (
                 <p className="rounded bg-green-500/10 text-sm text-green-700 dark:text-green-400">{t('profile.passwordUpdated')}</p>
               )}
               <div>
@@ -224,8 +224,8 @@ export function ProfileForm({ profile }: { profile: Profile }) {
                   className="mt-1"
                 />
               </div>
-              <Button type="submit" disabled={setPasswordLoading}>
-                {setPasswordLoading ? t('common.loading') : t('profile.savePassword')}
+              <Button type="submit" disabled={oauthPasswordLoading}>
+                {oauthPasswordLoading ? t('common.loading') : t('profile.savePassword')}
               </Button>
             </form>
           </CardContent>

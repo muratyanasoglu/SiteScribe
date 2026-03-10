@@ -133,7 +133,14 @@ export function validateSecurityAnswer(input: unknown): { ok: true; answer: stri
 export function validateUsername(input: unknown): { ok: true; username: string } | { ok: false; error: string } {
   const raw = typeof input === 'string' ? input.trim() : '';
   if (raw.length < 3) return { ok: false, error: 'Username must be at least 3 characters' };
-  const username = raw.slice(0, LIMITS.username).toLowerCase();
+  const lower = raw.toLowerCase();
+  // E-posta formatı (OAuth kullanıcıları): @ içeriyorsa e-posta kabul et
+  if (lower.includes('@')) {
+    const username = lower.slice(0, LIMITS.email);
+    if (!/^[a-z0-9_.+-]+@[a-z0-9.-]+$/i.test(username)) return { ok: false, error: 'Geçerli bir e-posta adresi girin' };
+    return { ok: true, username };
+  }
+  const username = lower.slice(0, LIMITS.username);
   if (!/^[a-z0-9_]+$/.test(username)) return { ok: false, error: 'Username can only contain letters, numbers and underscore' };
   return { ok: true, username };
 }
