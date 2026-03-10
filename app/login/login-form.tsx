@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useT } from '@/components/locale-provider';
+import { OAuthButtons } from './oauth-buttons';
 
 export function LoginForm() {
   const t = useT();
@@ -63,6 +64,7 @@ export function LoginForm() {
       <Button type="submit" className="w-full">
         {t('auth.signIn')}
       </Button>
+      <OAuthButtons />
     </form>
   );
 }

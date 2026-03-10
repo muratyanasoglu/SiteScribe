@@ -28,8 +28,9 @@ export function ForgotPasswordForm({ initialIdentifier }: { initialIdentifier: s
     let cancelled = false;
     getSecurityQuestion(initialIdentifier).then((res) => {
       if (cancelled) return;
-      if (res.error) setError(res.error);
-      else if (res.questionKey) setQuestionKey(res.questionKey);
+      if (res.error) {
+        setError((res as { oauthAccount?: boolean }).oauthAccount ? 'oauth' : res.error);
+      } else if (res.questionKey) setQuestionKey(res.questionKey);
     });
     return () => { cancelled = true; };
   }, [initialIdentifier, step, questionKey]);
@@ -47,7 +48,11 @@ export function ForgotPasswordForm({ initialIdentifier }: { initialIdentifier: s
     const res = await getSecurityQuestion(id);
     setLoading(false);
     if (res.error) {
-      setError(res.error);
+      if ((res as { oauthAccount?: boolean }).oauthAccount) {
+        setError('oauth');
+      } else {
+        setError(res.error);
+      }
       return;
     }
     setIdentifier(id);
@@ -102,7 +107,20 @@ export function ForgotPasswordForm({ initialIdentifier }: { initialIdentifier: s
     return (
       <form onSubmit={handleFetchQuestion} className="space-y-4">
         {error && (
-          <p className="rounded bg-destructive/10 text-sm text-destructive">{error}</p>
+          <div className="space-y-2">
+            {error === 'oauth' ? (
+              <p className="rounded bg-muted/80 text-sm text-foreground">{t('auth.oauthAccountRecovery')}</p>
+            ) : (
+              <p className="rounded bg-destructive/10 text-sm text-destructive">{error}</p>
+            )}
+            {error === 'oauth' && (
+              <p className="text-center">
+                <Link href="/login" className="text-primary font-medium hover:underline">
+                  {t('auth.backToSignIn')}
+                </Link>
+              </p>
+            )}
+          </div>
         )}
         <div>
           <Label htmlFor="identifier">{t('auth.emailOrUsername')}</Label>
@@ -111,20 +129,24 @@ export function ForgotPasswordForm({ initialIdentifier }: { initialIdentifier: s
             name="identifier"
             type="text"
             value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
+            onChange={(e) => { setIdentifier(e.target.value); if (error) setError(''); }}
             placeholder={t('auth.emailOrUsernamePlaceholder')}
             className="mt-1"
             autoComplete="username"
           />
         </div>
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? t('common.loading') : t('auth.getQuestion')}
-        </Button>
-        <p className="text-center text-sm">
-          <Link href="/login" className="text-primary hover:underline">
-            {t('auth.backToSignIn')}
-          </Link>
-        </p>
+        {error !== 'oauth' && (
+          <>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? t('common.loading') : t('auth.getQuestion')}
+            </Button>
+            <p className="text-center text-sm">
+              <Link href="/login" className="text-primary hover:underline">
+                {t('auth.backToSignIn')}
+              </Link>
+            </p>
+          </>
+        )}
       </form>
     );
   }
@@ -134,23 +156,38 @@ export function ForgotPasswordForm({ initialIdentifier }: { initialIdentifier: s
       return (
         <form onSubmit={handleFetchQuestion} className="space-y-4">
           {error && (
-            <p className="rounded bg-destructive/10 text-sm text-destructive">{error}</p>
+            <div className="space-y-2">
+              {error === 'oauth' ? (
+                <>
+                  <p className="rounded bg-muted/80 text-sm text-foreground">{t('auth.oauthAccountRecovery')}</p>
+                  <p className="text-center">
+                    <Link href="/login" className="text-primary font-medium hover:underline">{t('auth.backToSignIn')}</Link>
+                  </p>
+                </>
+              ) : (
+                <p className="rounded bg-destructive/10 text-sm text-destructive">{error}</p>
+              )}
+            </div>
           )}
-          <div>
-            <Label htmlFor="identifier">{t('auth.emailOrUsername')}</Label>
-            <Input
-              id="identifier"
-              name="identifier"
-              type="text"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              className="mt-1"
-              autoComplete="username"
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? t('common.loading') : t('auth.getQuestion')}
-          </Button>
+          {error !== 'oauth' && (
+            <>
+              <div>
+                <Label htmlFor="identifier-question">{t('auth.emailOrUsername')}</Label>
+                <Input
+                  id="identifier-question"
+                  name="identifier"
+                  type="text"
+                  value={identifier}
+                  onChange={(e) => { setIdentifier(e.target.value); setError(''); }}
+                  className="mt-1"
+                  autoComplete="username"
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? t('common.loading') : t('auth.getQuestion')}
+              </Button>
+            </>
+          )}
         </form>
       );
     }

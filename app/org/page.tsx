@@ -41,6 +41,7 @@ export default async function OrgPage() {
             <Link href="/guide" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.guide')}</Link>
             <Link href="/friends" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.friends')}</Link>
             <Link href="/chat" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.chat')}</Link>
+            <Link href="/org/chat" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('orgChat.groupChats')}</Link>
             <Link href="/notifications" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.notifications')}{unreadCount > 0 ? ` (${unreadCount})` : ''}</Link>
             <Link href="/profile" className="nav-link min-h-[44px] flex items-center sm:min-h-0">{t('nav.profile')}</Link>
             <span className="text-sm text-muted-foreground truncate max-w-[180px] sm:max-w-none px-2 py-2 sm:py-0">{session.user?.email}</span>
@@ -66,9 +67,12 @@ export default async function OrgPage() {
                 <CardTitle className="text-lg">{org.name}</CardTitle>
                 <p className="text-sm text-muted-foreground">{t('org.role')}: {role}</p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-wrap gap-2 items-center">
                 <Link href={`/projects?org=${org.id}`}>
                   <Button variant="outline" size="sm">{t('nav.viewProjects')}</Button>
+                </Link>
+                <Link href={`/org/chat?org=${org.id}`}>
+                  <Button variant="outline" size="sm">{t('orgChat.openGroupChat')}</Button>
                 </Link>
                 {role === 'OWNER' && (
                   <Link href={`/org/webhooks?org=${org.id}`} className="inline-block mt-1">

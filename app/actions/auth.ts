@@ -16,7 +16,7 @@ async function findUserByIdentifier(identifier: string) {
     where: isEmail
       ? { email: raw.toLowerCase() }
       : { username: raw.toLowerCase() },
-    select: { id: true, securityQuestionKey: true, securityAnswerHash: true },
+    select: { id: true, securityQuestionKey: true, securityAnswerHash: true, passwordHash: true },
   });
 }
 
@@ -62,10 +62,13 @@ export async function register(formData: FormData) {
   redirect('/login?registered=1');
 }
 
-/** Get security question for forgot-password flow. Returns questionKey or error. */
+/** Get security question for forgot-password flow. Returns questionKey or error. OAuth-only accounts get oauthAccount: true. */
 export async function getSecurityQuestion(identifier: string) {
   const user = await findUserByIdentifier(identifier);
   if (!user) return { error: 'User not found' };
+  if (!user.passwordHash) {
+    return { error: 'oauth', oauthAccount: true };
+  }
   if (!user.securityQuestionKey || !user.securityAnswerHash) {
     return { error: 'Password recovery is not available for this account' };
   }
@@ -87,7 +90,7 @@ export async function resetPasswordWithSecurityAnswer(
   if (!passwordResult.ok) return { error: passwordResult.error };
 
   const user = await findUserByIdentifier(identifier);
-  if (!user || !user.securityQuestionKey || !user.securityAnswerHash) {
+  if (!user || !user.passwordHash || !user.securityQuestionKey || !user.securityAnswerHash) {
     return { error: 'Invalid request' };
   }
   const ok = await bcrypt.compare(answerResult.answer, user.securityAnswerHash);

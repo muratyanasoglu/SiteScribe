@@ -5,6 +5,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { MobileNavMenu } from '@/components/mobile-nav-menu';
 import { RegisterForm } from './register-form';
+import { OAuthButtons } from '@/app/login/oauth-buttons';
 import { AuthLinksRegister } from '@/app/login/auth-links';
 
 export default async function RegisterPage() {
@@ -27,6 +28,7 @@ export default async function RegisterPage() {
           <p className="text-muted-foreground text-sm font-medium">{t('auth.createAccount')}</p>
         </div>
         <RegisterForm />
+        <OAuthButtons />
         <AuthLinksRegister />
       </div>
     </div>

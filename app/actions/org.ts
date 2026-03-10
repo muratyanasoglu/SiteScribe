@@ -16,12 +16,17 @@ export async function createOrganization(formData: FormData) {
   const slugResult = validateSlug(slugInput);
   if (!slugResult.ok) return { error: slugResult.error };
   const org = await prisma.organization.create({
-    data: { name: nameResult.name, slug: slugResult.slug },
+    data: {
+      name: nameResult.name,
+      slug: slugResult.slug,
+      orgChatRoom: { create: {} },
+    },
   });
   await prisma.membership.create({
     data: { organizationId: org.id, userId: user.id, role: 'OWNER' },
   });
   revalidatePath('/org');
+  revalidatePath('/org/chat');
   return { ok: true, orgId: org.id };
 }
 

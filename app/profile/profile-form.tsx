@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useT } from '@/components/locale-provider';
-import { updateProfile, updatePassword, updateSecurityQuestion } from '@/app/actions/profile';
+import { updateProfile, updatePassword, setPassword, updateSecurityQuestion } from '@/app/actions/profile';
 import { SECURITY_QUESTION_KEYS } from '@/lib/validation';
 
 type Profile = {
@@ -16,6 +16,7 @@ type Profile = {
   name: string | null;
   username: string | null;
   securityQuestionKey: string | null;
+  hasPassword: boolean;
 };
 
 export function ProfileForm({ profile }: { profile: Profile }) {
@@ -29,6 +30,25 @@ export function ProfileForm({ profile }: { profile: Profile }) {
   const [securityError, setSecurityError] = useState('');
   const [securitySuccess, setSecuritySuccess] = useState(false);
   const [securityLoading, setSecurityLoading] = useState(false);
+  const [setPasswordError, setSetPasswordError] = useState('');
+  const [setPasswordSuccess, setSetPasswordSuccess] = useState(false);
+  const [setPasswordLoading, setSetPasswordLoading] = useState(false);
+
+  async function handleSetPasswordSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSetPasswordError('');
+    setSetPasswordSuccess(false);
+    setSetPasswordLoading(true);
+    const formData = new FormData(e.currentTarget);
+    const result = await setPassword(formData);
+    setSetPasswordLoading(false);
+    if (result?.error) {
+      setSetPasswordError(result.error);
+      return;
+    }
+    setSetPasswordSuccess(true);
+    (e.target as HTMLFormElement).reset();
+  }
 
   async function handleProfileSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -136,47 +156,81 @@ export function ProfileForm({ profile }: { profile: Profile }) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">{t('profile.changePassword')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
-            {passwordError && (
-              <p className="rounded bg-destructive/10 text-sm text-destructive">{passwordError}</p>
-            )}
-            {passwordSuccess && (
-              <p className="rounded bg-green-500/10 text-sm text-green-700 dark:text-green-400">{t('profile.passwordUpdated')}</p>
-            )}
-            <div>
-              <Label htmlFor="currentPassword">{t('profile.currentPassword')}</Label>
-              <Input
-                id="currentPassword"
-                name="currentPassword"
-                type="password"
-                required
-                autoComplete="current-password"
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="newPassword">{t('auth.newPassword')}</Label>
-              <Input
-                id="newPassword"
-                name="newPassword"
-                type="password"
-                required
-                minLength={8}
-                autoComplete="new-password"
-                className="mt-1"
-              />
-            </div>
-            <Button type="submit" disabled={passwordLoading}>
-              {passwordLoading ? t('common.loading') : t('profile.savePassword')}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      {profile.hasPassword ? (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">{t('profile.changePassword')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              {passwordError && (
+                <p className="rounded bg-destructive/10 text-sm text-destructive">{passwordError}</p>
+              )}
+              {passwordSuccess && (
+                <p className="rounded bg-green-500/10 text-sm text-green-700 dark:text-green-400">{t('profile.passwordUpdated')}</p>
+              )}
+              <div>
+                <Label htmlFor="currentPassword">{t('profile.currentPassword')}</Label>
+                <Input
+                  id="currentPassword"
+                  name="currentPassword"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="newPassword">{t('auth.newPassword')}</Label>
+                <Input
+                  id="newPassword"
+                  name="newPassword"
+                  type="password"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  className="mt-1"
+                />
+              </div>
+              <Button type="submit" disabled={passwordLoading}>
+                {passwordLoading ? t('common.loading') : t('profile.savePassword')}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">{t('profile.setPassword')}</CardTitle>
+            <p className="text-sm text-muted-foreground">{t('profile.setPasswordHint')}</p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSetPasswordSubmit} className="space-y-4">
+              {setPasswordError && (
+                <p className="rounded bg-destructive/10 text-sm text-destructive">{setPasswordError}</p>
+              )}
+              {setPasswordSuccess && (
+                <p className="rounded bg-green-500/10 text-sm text-green-700 dark:text-green-400">{t('profile.passwordUpdated')}</p>
+              )}
+              <div>
+                <Label htmlFor="setNewPassword">{t('auth.newPassword')}</Label>
+                <Input
+                  id="setNewPassword"
+                  name="newPassword"
+                  type="password"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  className="mt-1"
+                />
+              </div>
+              <Button type="submit" disabled={setPasswordLoading}>
+                {setPasswordLoading ? t('common.loading') : t('profile.savePassword')}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader className="pb-2">

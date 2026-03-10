@@ -46,6 +46,24 @@ export const ALLOWED_EVIDENCE_MIMES = [
   'application/pdf',
 ] as const;
 
+/** Allowed MIME types for org group chat attachments (WhatsApp-like: images + common files). */
+export const ALLOWED_CHAT_ATTACHMENT_MIMES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'text/csv',
+] as const;
+
+/** Max size for chat attachment (10 MB). */
+export const CHAT_ATTACHMENT_SIZE_MAX = 10 * 1024 * 1024;
+
 /** Normalize whitespace (collapse to single space) and trim; cap at maxLength. */
 export function sanitizeString(s: unknown, maxLength: number): string {
   if (s == null || typeof s !== 'string') return '';

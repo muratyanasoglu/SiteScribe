@@ -39,7 +39,9 @@
     "passwordUpdated": "Password updated.",
     "securityQuestion": "Security question (password recovery)",
     "saveSecurity": "Save security question",
-    "securityUpdated": "Security question saved."
+    "securityUpdated": "Security question saved.",
+    "setPassword": "Set password",
+    "setPasswordHint": "You signed in with Google or GitHub. Set a password here to also sign in with email."
   },
   "auth": {
     "signIn": "Sign in",
@@ -79,7 +81,11 @@
     "securityQuestion_first_car": "What was your first car's model or name?",
     "securityQuestion_childhood_friend": "What was your childhood best friend's name?",
     "securityAnswer": "Your answer",
-    "securityAnswerPlaceholder": "Enter your answer"
+    "securityAnswerPlaceholder": "Enter your answer",
+    "oauthAccountRecovery": "This account uses Google or GitHub sign-in. Please sign in with that method.",
+    "orContinueWith": "or continue with",
+    "signInWithGoogle": "Sign in with Google",
+    "signInWithGitHub": "Sign in with GitHub"
   },
   "friends": {
     "title": "Friends",
@@ -123,6 +129,18 @@
     "errorSend": "Could not send message. Try again.",
     "errorNotFriends": "You can only message friends.",
     "errorInvalidUser": "Invalid user."
+  },
+  "orgChat": {
+    "title": "Organization group chat",
+    "groupChats": "Group chats",
+    "openGroupChat": "Group chat",
+    "noOrgChats": "You are not in any organization. Create or join an organization to see group chats.",
+    "selectOrg": "Select an organization to open its group chat.",
+    "typeMessage": "Type a message...",
+    "attachFile": "Attach image or file",
+    "removeAttachment": "Remove",
+    "attachment": "Attachment",
+    "membersOnly": "Members only"
   },
   "org": {
     "organizations": "Organizations",

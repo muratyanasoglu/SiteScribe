@@ -20,11 +20,11 @@ export type Messages = typeof import('@/messages/en.json');
 export async function getMessages(locale: Locale): Promise<Messages> {
   switch (locale) {
     case 'es':
-      return (await import('@/messages/es.json')).default;
+      return (await import('@/messages/es.json')).default as Messages;
     case 'fr':
-      return (await import('@/messages/fr.json')).default;
+      return (await import('@/messages/fr.json')).default as Messages;
     case 'tr':
-      return (await import('@/messages/tr.json')).default;
+      return (await import('@/messages/tr.json')).default as Messages;
     default:
       return (await import('@/messages/en.json')).default;
   }

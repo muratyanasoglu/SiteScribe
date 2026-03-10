@@ -39,7 +39,9 @@
     "passwordUpdated": "Mot de passe mis à jour.",
     "securityQuestion": "Question de sécurité (récupération)",
     "saveSecurity": "Enregistrer la question",
-    "securityUpdated": "Question enregistrée."
+    "securityUpdated": "Question enregistrée.",
+    "setPassword": "Définir un mot de passe",
+    "setPasswordHint": "Vous vous êtes connecté avec Google ou GitHub. Définissez un mot de passe ici pour vous connecter aussi par e-mail."
   },
   "auth": {
     "signIn": "Connexion",
@@ -79,7 +81,11 @@
     "securityQuestion_first_car": "Quelle était la marque ou le nom de votre première voiture ?",
     "securityQuestion_childhood_friend": "Quel était le nom de votre meilleur ami d'enfance ?",
     "securityAnswer": "Votre réponse",
-    "securityAnswerPlaceholder": "Entrez votre réponse"
+    "securityAnswerPlaceholder": "Entrez votre réponse",
+    "oauthAccountRecovery": "Ce compte utilise la connexion Google ou GitHub. Veuillez vous connecter avec cette méthode.",
+    "orContinueWith": "ou continuer avec",
+    "signInWithGoogle": "Se connecter avec Google",
+    "signInWithGitHub": "Se connecter avec GitHub"
   },
   "org": {
     "organizations": "Organisations",
@@ -614,6 +620,10 @@
     "searchByUsername": "Rechercher par nom d'utilisateur",
     "username": "Nom d'utilisateur",
     "usernameHint": "Lettres, chiffres, tiret bas. Pour que d'autres vous trouvent.",
+    "usernamePlaceholder": "johndoe",
+    "searchPlaceholder": "Nom d'utilisateur à rechercher",
+    "searchButton": "Rechercher",
+    "saveUsername": "Enregistrer",
     "sendRequest": "Envoyer une demande d'ami",
     "requestSent": "Demande envoyée",
     "alreadyFriends": "Déjà amis",
@@ -646,5 +656,17 @@
     "errorSend": "Impossible d'envoyer le message. Réessayez.",
     "errorNotFriends": "Vous ne pouvez envoyer des messages qu'à vos amis.",
     "errorInvalidUser": "Utilisateur invalide."
+  },
+  "orgChat": {
+    "title": "Chat de groupe d'organisation",
+    "groupChats": "Chats de groupe",
+    "openGroupChat": "Chat de groupe",
+    "noOrgChats": "Vous n'êtes dans aucune organisation. Créez ou rejoignez une organisation pour voir les chats de groupe.",
+    "selectOrg": "Sélectionnez une organisation pour ouvrir son chat de groupe.",
+    "typeMessage": "Écrivez un message...",
+    "attachFile": "Joindre image ou fichier",
+    "removeAttachment": "Retirer",
+    "attachment": "Pièce jointe",
+    "membersOnly": "Membres uniquement"
   }
 }

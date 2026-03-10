@@ -23,12 +23,13 @@ model Organization {
   invitations   Invitation[]
   coTemplates   COTemplate[]
   webhooks      Webhook[]
+  orgChatRoom   OrgChatRoom?
 }
 
 model User {
   id                 String    @id @default(cuid())
   email              String    @unique
-  passwordHash       String    @map("password_hash")
+  passwordHash       String?   @map("password_hash")  // null for OAuth-only users
   name               String?
   username           String?   @unique
   securityQuestionKey String?   @map("security_question_key")
@@ -46,6 +47,7 @@ model User {
   friendRequestsReceived FriendRequest[] @relation("FriendRequestTo")
   messagesSent          ChatMessage[]   @relation("ChatMessageSender")
   messagesReceived      ChatMessage[]   @relation("ChatMessageReceiver")
+  orgChatMessages       OrgChatMessage[]
 }
 
 model Account {
@@ -296,6 +298,35 @@ model ChatMessage {
   @@index([senderId, receiverId])
   @@index([receiverId, senderId])
   @@index([createdAt])
+}
+
+// ============ Organization group chat (one room per org, members only) ============
+model OrgChatRoom {
+  id             String   @id @default(cuid())
+  organizationId String   @unique @map("organization_id")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  messages     OrgChatMessage[]
+}
+
+model OrgChatMessage {
+  id                  String    @id @default(cuid())
+  roomId              String    @map("room_id")
+  senderId            String    @map("sender_id")
+  body                String    @db.Text
+  attachmentUrl       String?   @map("attachment_url")
+  attachmentMimeType   String?   @map("attachment_mime_type")
+  attachmentFileName  String?   @map("attachment_file_name")
+  createdAt           DateTime  @default(now())
+
+  room   OrgChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([roomId])
+  @@index([roomId, createdAt])
+  @@index([senderId])
 }
 
 // ============ Invitation ============

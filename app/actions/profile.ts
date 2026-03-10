@@ -77,6 +77,30 @@ export async function updatePassword(formData: FormData) {
   return { ok: true };
 }
 
+/** Set password for OAuth-only users (no current password). */
+export async function setPassword(formData: FormData) {
+  const user = await getCurrentUser();
+  if (!user) return { error: 'Unauthorized' };
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { passwordHash: true },
+  });
+  if (dbUser?.passwordHash) {
+    return { error: 'Use change password to update your existing password' };
+  }
+
+  const newPasswordResult = validatePassword(formData.get('newPassword'));
+  if (!newPasswordResult.ok) return { error: newPasswordResult.error };
+
+  const passwordHash = await bcrypt.hash(newPasswordResult.password, 10);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { passwordHash },
+  });
+  return { ok: true };
+}
+
 export async function updateSecurityQuestion(formData: FormData) {
   const user = await getCurrentUser();
   if (!user) return { error: 'Unauthorized' };

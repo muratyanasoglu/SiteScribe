@@ -36,8 +36,12 @@ export function ExportAndMailto({
       }
       const jobId = (exportResult as { exportId: string }).exportId;
       const { mailto } = await recordSentAndGetMailto(projectId, changeOrderId, jobId, email.trim());
-      toast('Your email client is opening.', { variant: 'success' });
-      window.location.href = mailto;
+      if (mailto) {
+        toast('Your email client is opening.', { variant: 'success' });
+        window.location.href = mailto;
+      } else {
+        toast('Could not open email client.', { variant: 'error' });
+      }
     } finally {
       setLoading(false);
     }

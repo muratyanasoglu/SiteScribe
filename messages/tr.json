@@ -39,7 +39,9 @@
     "passwordUpdated": "Şifre güncellendi.",
     "securityQuestion": "Güvenlik sorusu (şifre kurtarma)",
     "saveSecurity": "Güvenlik sorusunu kaydet",
-    "securityUpdated": "Güvenlik sorusu kaydedildi."
+    "securityUpdated": "Güvenlik sorusu kaydedildi.",
+    "setPassword": "Şifre belirle",
+    "setPasswordHint": "Google veya GitHub ile giriş yaptınız. E-posta ile de giriş yapabilmek için buradan şifre belirleyin."
   },
   "auth": {
     "signIn": "Giriş yap",
@@ -79,7 +81,11 @@
     "securityQuestion_first_car": "İlk arabanızın markası veya adı neydi?",
     "securityQuestion_childhood_friend": "Çocukluk en iyi arkadaşınızın adı neydi?",
     "securityAnswer": "Cevabınız",
-    "securityAnswerPlaceholder": "Cevabınızı yazın"
+    "securityAnswerPlaceholder": "Cevabınızı yazın",
+    "oauthAccountRecovery": "Bu hesap Google veya GitHub ile giriş kullanıyor. Lütfen o yöntemle giriş yapın.",
+    "orContinueWith": "veya şununla devam et",
+    "signInWithGoogle": "Google ile giriş yap",
+    "signInWithGitHub": "GitHub ile giriş yap"
   },
   "org": {
     "organizations": "Organizasyonlar",
@@ -614,6 +620,10 @@
     "searchByUsername": "Kullanıcı adıyla ara",
     "username": "Kullanıcı adı",
     "usernameHint": "Harfler, rakamlar, alt çizgi. Başkaları sizi bulabilsin diye.",
+    "usernamePlaceholder": "johndoe",
+    "searchPlaceholder": "Aranacak kullanıcı adı",
+    "searchButton": "Ara",
+    "saveUsername": "Kaydet",
     "sendRequest": "Arkadaşlık isteği gönder",
     "requestSent": "İstek gönderildi",
     "alreadyFriends": "Zaten arkadaşsınız",
@@ -646,5 +656,17 @@
     "errorSend": "Mesaj gönderilemedi. Tekrar deneyin.",
     "errorNotFriends": "Yalnızca arkadaşlarınıza mesaj atabilirsiniz.",
     "errorInvalidUser": "Geçersiz kullanıcı."
+  },
+  "orgChat": {
+    "title": "Organizasyon grup sohbeti",
+    "groupChats": "Grup sohbetleri",
+    "openGroupChat": "Grup sohbeti",
+    "noOrgChats": "Herhangi bir organizasyonda değilsiniz. Grup sohbetleri için organizasyon oluşturun veya davet kabul edin.",
+    "selectOrg": "Grup sohbetini açmak için bir organizasyon seçin.",
+    "typeMessage": "Mesaj yazın...",
+    "attachFile": "Resim veya dosya ekle",
+    "removeAttachment": "Kaldır",
+    "attachment": "Ek",
+    "membersOnly": "Yalnızca üyeler"
   }
 }

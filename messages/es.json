@@ -39,7 +39,9 @@
     "passwordUpdated": "Contraseña actualizada.",
     "securityQuestion": "Pregunta de seguridad (recuperación)",
     "saveSecurity": "Guardar pregunta",
-    "securityUpdated": "Pregunta guardada."
+    "securityUpdated": "Pregunta guardada.",
+    "setPassword": "Establecer contraseña",
+    "setPasswordHint": "Iniciaste sesión con Google o GitHub. Establece una contraseña aquí para poder iniciar sesión también con correo."
   },
   "auth": {
     "signIn": "Iniciar sesión",
@@ -79,7 +81,11 @@
     "securityQuestion_first_car": "¿Cuál era la marca o nombre de tu primer coche?",
     "securityQuestion_childhood_friend": "¿Cómo se llamaba tu mejor amigo de la infancia?",
     "securityAnswer": "Tu respuesta",
-    "securityAnswerPlaceholder": "Escribe tu respuesta"
+    "securityAnswerPlaceholder": "Escribe tu respuesta",
+    "oauthAccountRecovery": "Esta cuenta usa inicio de sesión con Google o GitHub. Inicia sesión con ese método.",
+    "orContinueWith": "o continuar con",
+    "signInWithGoogle": "Iniciar sesión con Google",
+    "signInWithGitHub": "Iniciar sesión con GitHub"
   },
   "org": {
     "organizations": "Organizaciones",
@@ -88,6 +94,9 @@
     "inviteOnlyFromFriends": "Invita solo desde tus amigos (usuarios registrados). Añade amigos desde la página Amigos primero.",
     "noFriendsToInvite": "No hay amigos para invitar. Añade amigos desde la página Amigos y luego invítalos aquí.",
     "slugOptional": "Slug (opcional)",
+    "slugPlaceholder": "mi-org",
+    "emailPlaceholder": "usuario@ejemplo.com",
+    "inviteFriend": "Invitar amigo",
     "role": "Rol",
     "pendingInvitations": "Invitaciones pendientes",
     "cancel": "Cancelar",
@@ -110,8 +119,6 @@
     "webhookAdded": "Webhook añadido.",
     "selectAtLeastOneEvent": "Selecciona al menos un evento.",
     "addWebhook": "Añadir webhook",
-    "slugPlaceholder": "mi-org",
-    "emailPlaceholder": "usuario@ejemplo.com",
     "webhookUrl": "URL",
     "webhookUrlPlaceholder": "https://ejemplo.com/webhook",
     "webhookSecretOptional": "Secret (opcional)",
@@ -614,6 +621,10 @@
     "searchByUsername": "Buscar por nombre de usuario",
     "username": "Nombre de usuario",
     "usernameHint": "Letras, números, guión bajo. Para que otros te encuentren.",
+    "usernamePlaceholder": "johndoe",
+    "searchPlaceholder": "Nombre de usuario a buscar",
+    "searchButton": "Buscar",
+    "saveUsername": "Guardar",
     "sendRequest": "Enviar solicitud de amistad",
     "requestSent": "Solicitud enviada",
     "alreadyFriends": "Ya sois amigos",
@@ -646,5 +657,17 @@
     "errorSend": "No se pudo enviar el mensaje. Inténtalo de nuevo.",
     "errorNotFriends": "Solo puedes enviar mensajes a amigos.",
     "errorInvalidUser": "Usuario no válido."
+  },
+  "orgChat": {
+    "title": "Chat de grupo de organización",
+    "groupChats": "Chats de grupo",
+    "openGroupChat": "Chat de grupo",
+    "noOrgChats": "No perteneces a ninguna organización. Crea o únete a una para ver los chats de grupo.",
+    "selectOrg": "Selecciona una organización para abrir su chat de grupo.",
+    "typeMessage": "Escribe un mensaje...",
+    "attachFile": "Adjuntar imagen o archivo",
+    "removeAttachment": "Quitar",
+    "attachment": "Adjunto",
+    "membersOnly": "Solo miembros"
   }
 }
