@@ -1,0 +1,88 @@
+SiteScribe — Commands
+=====================
+
+All commands below are intended to be run from the repository root.
+
+
+Prerequisites
+-------------
+- Node.js 18+
+- MySQL 8.x (local or remote)
+
+
+Install dependencies
+--------------------
+npm install
+
+
+Environment setup
+-----------------
+Create your local env file:
+- Windows PowerShell:
+  Copy-Item .env.example .env
+- macOS/Linux:
+  cp .env.example .env
+
+Minimum required variables (see `.env.example`):
+- DATABASE_URL
+- NEXTAUTH_SECRET
+- NEXTAUTH_URL
+
+
+Database (Prisma)
+-----------------
+Generate Prisma client:
+npm run db:generate
+
+Create/apply migrations (dev):
+npm run db:migrate
+
+Push schema without migrations (use with care):
+npm run db:push
+
+Seed:
+npm run db:seed
+
+Prisma Studio:
+npm run db:studio
+
+
+Run (development)
+-----------------
+npm run dev
+
+Open:
+http://localhost:3000
+
+
+Build & run (production-like)
+-----------------------------
+Build:
+npm run build
+
+Start:
+npm run start
+
+
+Lint
+----
+npm run lint
+
+
+Tests
+-----
+Run once:
+npm test
+
+Watch:
+npm run test:watch
+
+
+Typical first-time local setup
+------------------------------
+npm install
+Copy-Item .env.example .env
+# Edit .env (DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL, ...)
+npm run db:migrate
+npm run db:seed
+npm run dev

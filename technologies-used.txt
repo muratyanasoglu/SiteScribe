@@ -1,0 +1,73 @@
+SiteScribe — Technologies Used
+=============================
+
+This document lists the main technologies used in this repository, grouped by category.
+
+
+Core Application
+----------------
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+
+
+Styling & UI
+------------
+- Tailwind CSS
+- Radix UI (React primitives)
+- next-themes (theme switching)
+- lucide-react (icons)
+- class-variance-authority, clsx, tailwind-merge (class utilities)
+- tailwindcss-animate (Tailwind animation utilities)
+
+
+Auth & Security
+---------------
+- NextAuth (Credentials + optional OAuth)
+- bcryptjs (password hashing)
+- @auth/prisma-adapter (NextAuth adapter)
+- Security headers configured in `next.config.js` (CSP, HSTS in production, etc.)
+
+
+Database & Data Layer
+---------------------
+- MySQL 8.x
+- Prisma ORM
+  - `prisma` CLI
+  - `@prisma/client`
+
+
+Storage & File Handling
+-----------------------
+- Local filesystem uploads (default)
+- Vercel Blob (optional) via `@vercel/blob`
+- PDF processing:
+  - pdf-parse (text extraction)
+  - pdf-lib (PDF generation/manipulation)
+- jszip (ZIP export packaging)
+- SHA-256 hashing (Node.js crypto, used for export manifests)
+- mermaid (diagrams)
+
+
+AI Integrations (Optional)
+--------------------------
+- Mistral API via `@mistralai/mistralai` (chat/embeddings; optional vision model)
+- OpenAI SDK (`openai`) is present as a dependency (usage may be optional)
+
+
+Email (Optional)
+---------------
+- Resend (`resend`) for invites and export-by-email
+
+
+Testing & Quality
+-----------------
+- Jest
+- ts-jest
+- ESLint (Next.js config via `eslint-config-next`)
+- PostCSS + Autoprefixer (Tailwind pipeline)
+
+
+Package Management
+------------------
+- npm (package-lock.json present)
